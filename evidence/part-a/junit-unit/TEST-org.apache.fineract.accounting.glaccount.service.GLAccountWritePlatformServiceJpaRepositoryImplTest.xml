@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.apache.fineract.accounting.glaccount.service.GLAccountWritePlatformServiceJpaRepositoryImplTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-10-27T15:18:56.564Z" hostname="job-HP-ENVY-Laptop-14t-eb000" time="0.095">
+  <properties/>
+  <testcase name="testDeleteGLAccountSuccessWithNoDependencies()" classname="org.apache.fineract.accounting.glaccount.service.GLAccountWritePlatformServiceJpaRepositoryImplTest" time="0.095"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdPolicyTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-27T15:18:56.542Z" hostname="job-HP-ENVY-Laptop-14t-eb000" time="0.014">
+  <properties/>
+  <testcase name="identicalPayloadMatches()" classname="org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdPolicyTest" time="0.002"/>
+  <testcase name="whitespaceAndOmittedDefaultsDoNotCountAsDifferences()" classname="org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdPolicyTest" time="0.002"/>
+  <testcase name="anyBusinessAttributeDifferenceIsAConflict()" classname="org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdPolicyTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

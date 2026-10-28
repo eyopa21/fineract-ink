@@ -1,0 +1,15 @@
+org.apache.fineract.accounting.glaccount.exception.GLAccountExternalIdConflictExceptionMapperTest
+  Test conflictIsMappedToHttp409WithFineractErrorBody() PASSED
+org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdCreateTest
+  Test uniqueIndexViolationOnExternalIdIsMappedToConflict() PASSED (17.8s)
+  Test accountWithoutExternalReferenceIsCreatedWithEmptyReferenceAndNoLookup() PASSED
+  Test sameReferenceWithIdenticalPayloadReturnsExistingAccountWithoutSaving() PASSED
+  Test uniqueIndexViolationOnGlCodeIsStillReportedAsDuplicateCodeOnPostgresConstraintName() PASSED
+  Test newExternalReferenceCreatesTheAccountAndPersistsTheReference() PASSED
+  Test sameReferenceWithDifferentPayloadIsRejectedWithConflictBeforeAnyWrite() PASSED
+org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdPolicyTest
+  Test identicalPayloadMatches() PASSED
+  Test whitespaceAndOmittedDefaultsDoNotCountAsDifferences() PASSED
+  Test anyBusinessAttributeDifferenceIsAConflict() PASSED
+org.apache.fineract.accounting.glaccount.service.GLAccountWritePlatformServiceJpaRepositoryImplTest
+  Test testDeleteGLAccountSuccessWithNoDependencies() PASSED

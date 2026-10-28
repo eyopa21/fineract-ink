@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdCreateTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-27T15:18:38.397Z" hostname="job-HP-ENVY-Laptop-14t-eb000" time="18.138">
+  <properties/>
+  <testcase name="uniqueIndexViolationOnExternalIdIsMappedToConflict()" classname="org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdCreateTest" time="17.842"/>
+  <testcase name="accountWithoutExternalReferenceIsCreatedWithEmptyReferenceAndNoLookup()" classname="org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdCreateTest" time="0.11"/>
+  <testcase name="sameReferenceWithIdenticalPayloadReturnsExistingAccountWithoutSaving()" classname="org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdCreateTest" time="0.088"/>
+  <testcase name="uniqueIndexViolationOnGlCodeIsStillReportedAsDuplicateCodeOnPostgresConstraintName()" classname="org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdCreateTest" time="0.03"/>
+  <testcase name="newExternalReferenceCreatesTheAccountAndPersistsTheReference()" classname="org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdCreateTest" time="0.026"/>
+  <testcase name="sameReferenceWithDifferentPayloadIsRejectedWithConflictBeforeAnyWrite()" classname="org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdCreateTest" time="0.016"/>
+  <system-out><![CDATA[18:18:56.412 [Test worker] INFO org.apache.fineract.accounting.glaccount.service.GLAccountWritePlatformServiceJpaRepositoryImpl -- GL account create replayed for external reference GL-1200: returning existing account 7
+]]></system-out>
+  <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/home/job/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.17.8/f09415827a71be7ed621c7bd02550678f28bc81c/byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>

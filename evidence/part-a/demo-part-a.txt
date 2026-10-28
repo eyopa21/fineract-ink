@@ -1,0 +1,39 @@
+== Part A demo against http://localhost:8080/fineract-provider/api/v1 (reference GL-DEMO-15975, code DEMO15975)
+
+-- before: GL accounts carrying GL-DEMO-15975: 0
+
+== 1. Create with externalId (new reference)
+   HTTP 200
+   {"resourceId":1,"resourceExternalId":"GL-DEMO-15975"}
+   -> created id 1; GET shows the persisted reference:
+    {'id': 1, 'glCode': 'DEMO15975', 'name': 'Loan Receivable', 'externalId': 'GL-DEMO-15975'}
+-- after: GL accounts carrying GL-DEMO-15975: 1
+
+== 2. Same reference, identical payload, sent 3 more times
+   attempt 1: HTTP 200 resourceId=1 replay=True
+   attempt 2: HTTP 200 resourceId=1 replay=True
+   attempt 3: HTTP 200 resourceId=1 replay=True
+-- after: GL accounts carrying GL-DEMO-15975: 1   (expected 1)
+
+== 3. Same reference, different payload (name changed)
+   HTTP 409
+   {"developerMessage":"General Ledger Account with external reference GL-DEMO-15975 already exists (GL code DEMO15975) with a different payload","httpStatusCode":"409","defaultUserMessage":"General Ledger Account with external reference GL-DEMO-15975 already exists (GL code DEMO15975) with a different payload","userMessageGlobalisationCode":"error.msg.glaccount.externalid.conflict"}
+   (expected HTTP 409, error.msg.glaccount.externalid.conflict)
+-- after: GL accounts carrying GL-DEMO-15975: 1   (expected 1)
+
+== 4. Permission model: a user without CREATE_GLACCOUNT
+   created role 3 (no permissions) and user gldemo15975 (HTTP 200)
+   HTTP 403
+   {"developerMessage":"The user associated with credentials passed on this request does not have sufficient privileges to perform this action.","httpStatusCode":"403","defaultUserMessage":"Insufficient privileges to perform this action.","userMessageGlobalisationCode":"error.msg.not.authorized","errors":[{"developerMessage":"User has no authority to: CREATE_GLACCOUNT","defaultUserMessage":"User has no authority to: CREATE_GLACCOUNT","userMessageGlobalisationCode":"error.msg.not.authorized","parameterName":"id","args":[]}]}
+   (expected HTTP 403 naming CREATE_GLACCOUNT)
+-- after: GL accounts carrying GL-DEMO-15975: 1   (expected 1)
+
+== Database view (unique constraint on acc_gl_account.external_id)
+ id |  gl_code  |      name       |  external_id  
+----+-----------+-----------------+---------------
+  1 | DEMO15975 | Loan Receivable | GL-DEMO-15975
+(1 row)
+
+   constraint: acc_gl_account_external_id_UNIQUE
+
+== done

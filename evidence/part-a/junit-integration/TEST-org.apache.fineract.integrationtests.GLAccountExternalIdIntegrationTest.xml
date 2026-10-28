@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.apache.fineract.integrationtests.GLAccountExternalIdIntegrationTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-27T15:47:32.385Z" hostname="job-HP-ENVY-Laptop-14t-eb000" time="8.12">
+  <properties/>
+  <testcase name="sameReferenceWithDifferentPayloadIsRejectedWith409()" classname="org.apache.fineract.integrationtests.GLAccountExternalIdIntegrationTest" time="5.606"/>
+  <testcase name="createIsRefusedForUserWithoutCreateGlAccountPermission()" classname="org.apache.fineract.integrationtests.GLAccountExternalIdIntegrationTest" time="1.706"/>
+  <testcase name="externalReferenceIsPersistedAndIdenticalReplayReturnsExistingAccount()" classname="org.apache.fineract.integrationtests.GLAccountExternalIdIntegrationTest" time="0.803"/>
+  <system-out><![CDATA[?[32m2026-10-27 18:47:35.389?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - /fineract-provider/actuator/health return HTTP 200, application is now ready for integration testing!
+?[32m2026-10-27 18:47:35.401?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - Logging in, for integration test...
+?[32m2026-10-27 18:47:36.921?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - JSON {"glCode":"D0YCCKZ","usage":1,"name":"Interest Income","manualEntriesAllowed":true,"description":"ERP-owned account GL-0YCCKZ","externalId":"GL-0YCCKZ","type":1}
+?[32m2026-10-27 18:47:37.287?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - JSON {"glCode":"D0YCCKZ","usage":1,"name":"Interest Income (renamed)","manualEntriesAllowed":true,"description":"ERP-owned account GL-0YCCKZ","externalId":"GL-0YCCKZ","type":1}
+HTTP/1.1 409 
+X-Notification-Refresh: false
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/json
+Content-Length: 371
+Date: Tue, 27 Oct 2026 15:47:37 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "developerMessage": "General Ledger Account with external reference GL-0YCCKZ already exists (GL code D0YCCKZ) with a different payload",
+    "httpStatusCode": "409",
+    "defaultUserMessage": "General Ledger Account with external reference GL-0YCCKZ already exists (GL code D0YCCKZ) with a different payload",
+    "userMessageGlobalisationCode": "error.msg.glaccount.externalid.conflict"
+}
+?[32m2026-10-27 18:47:37.680?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - JSON {"glCode":"D0YCCKZX","usage":1,"name":"Interest Income","manualEntriesAllowed":true,"description":"ERP-owned account GL-0YCCKZ","externalId":"GL-0YCCKZ","type":1}
+HTTP/1.1 409 
+X-Notification-Refresh: false
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/json
+Content-Length: 371
+Date: Tue, 27 Oct 2026 15:47:37 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "developerMessage": "General Ledger Account with external reference GL-0YCCKZ already exists (GL code D0YCCKZ) with a different payload",
+    "httpStatusCode": "409",
+    "defaultUserMessage": "General Ledger Account with external reference GL-0YCCKZ already exists (GL code D0YCCKZ) with a different payload",
+    "userMessageGlobalisationCode": "error.msg.glaccount.externalid.conflict"
+}
+?[32m2026-10-27 18:47:38.040?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - /fineract-provider/actuator/health return HTTP 200, application is now ready for integration testing!
+?[32m2026-10-27 18:47:38.041?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - Logging in, for integration test...
+?[32m2026-10-27 18:47:38.178?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - JSON {"name":"Role_Name_8U9A1","description":"Role_Description_WKFC5BEQYS"}
+?[32m2026-10-27 18:47:38.450?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.i.c.organisation.StaffHelper?[0;39m - map :  {firstname=michael_UH4PD, dateFormat=dd MMMM yyyy, officeId=1, joiningDate=20 September 2011, locale=en, isLoanOfficer=true, lastname=Doe_6CMC}
+?[32m2026-10-27 18:47:38.451?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - JSON {"firstname":"michael_UH4PD","dateFormat":"dd MMMM yyyy","officeId":1,"joiningDate":"20 September 2011","locale":"en","isLoanOfficer":true,"lastname":"Doe_6CMC"}
+?[32m2026-10-27 18:47:38.736?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - JSON { "username": "glsyncB1DF5B1S", "firstname": "Test", "lastname": "User", "email": "whatever@mifos.org", "officeId": "1", "staffId": "2","roles": ["4"], "sendPasswordToEmail": false,     "password": "A1b2c3d4e5f$",    "repeatPassword": "A1b2c3d4e5f$"}
+?[32m2026-10-27 18:47:39.316?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - /fineract-provider/actuator/health return HTTP 200, application is now ready for integration testing!
+?[32m2026-10-27 18:47:39.316?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - Logging in, for integration test...
+?[32m2026-10-27 18:47:39.510?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - JSON {"glCode":"PFC446Y","usage":1,"name":"Bank","manualEntriesAllowed":true,"description":"ERP-owned account GL-FC446Y","externalId":"GL-FC446Y","type":1}
+HTTP/1.1 403 
+X-Notification-Refresh: false
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: application/json
+Content-Length: 526
+Date: Tue, 27 Oct 2026 15:47:39 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "developerMessage": "The user associated with credentials passed on this request does not have sufficient privileges to perform this action.",
+    "httpStatusCode": "403",
+    "defaultUserMessage": "Insufficient privileges to perform this action.",
+    "userMessageGlobalisationCode": "error.msg.not.authorized",
+    "errors": [
+        {
+            "developerMessage": "User has no authority to: CREATE_GLACCOUNT",
+            "defaultUserMessage": "User has no authority to: CREATE_GLACCOUNT",
+            "userMessageGlobalisationCode": "error.msg.not.authorized",
+            "parameterName": "id",
+            "args": [
+                
+            ]
+        }
+    ]
+}
+?[32m2026-10-27 18:47:39.735?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - /fineract-provider/actuator/health return HTTP 200, application is now ready for integration testing!
+?[32m2026-10-27 18:47:39.736?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - Logging in, for integration test...
+?[32m2026-10-27 18:47:39.865?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - JSON {"glCode":"CDPH6TG","usage":1,"name":"Loan Receivable","manualEntriesAllowed":true,"description":"ERP-owned account GL-DPH6TG","externalId":"GL-DPH6TG","type":1}
+?[32m2026-10-27 18:47:40.081?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - JSON {"glCode":"CDPH6TG","usage":1,"name":"Loan Receivable","manualEntriesAllowed":true,"description":"ERP-owned account GL-DPH6TG","externalId":"GL-DPH6TG","type":1}
+?[32m2026-10-27 18:47:40.185?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - JSON {"glCode":"CDPH6TG","usage":1,"name":"Loan Receivable","manualEntriesAllowed":true,"description":"ERP-owned account GL-DPH6TG","externalId":"GL-DPH6TG","type":1}
+?[32m2026-10-27 18:47:40.288?[0;39m [Test worker] ?[34mINFO ?[0;39m ?[36mo.a.f.integrationtests.common.Utils?[0;39m - JSON {"glCode":"CDPH6TG","usage":1,"name":"Loan Receivable","manualEntriesAllowed":true,"description":"ERP-owned account GL-DPH6TG","externalId":"GL-DPH6TG","type":1}
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

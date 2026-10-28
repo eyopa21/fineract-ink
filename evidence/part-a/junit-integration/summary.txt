@@ -1,0 +1,5 @@
+org.apache.fineract.integrationtests.GLAccountExternalIdIntegrationTest
+  Test sameReferenceWithDifferentPayloadIsRejectedWith409() PASSED (5.6s)
+  Test createIsRefusedForUserWithoutCreateGlAccountPermission() PASSED
+  Test externalReferenceIsPersistedAndIdenticalReplayReturnsExistingAccount() PASSED
+BUILD SUCCESSFUL in 1m 7s
