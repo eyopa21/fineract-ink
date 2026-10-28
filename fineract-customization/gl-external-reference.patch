@@ -1,5 +1,5 @@
 diff --git a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/api/GLAccountsApiResource.java b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/api/GLAccountsApiResource.java
-index 0c400a852b..11a79b2571 100644
+index 0c400a8..11a79b2 100644
 --- a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/api/GLAccountsApiResource.java
 +++ b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/api/GLAccountsApiResource.java
 @@ -184,6 +184,7 @@ public class GLAccountsApiResource {
@@ -11,7 +11,7 @@ index 0c400a852b..11a79b2571 100644
      @AlternativeOperationId("createGLAccount_1")
      @RequestBody(content = @Content(schema = @Schema(implementation = GLAccountsApiResourceSwagger.PostGLAccountsRequest.class)))
 diff --git a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/api/GLAccountsApiResourceSwagger.java b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/api/GLAccountsApiResourceSwagger.java
-index ca97d53eb9..c69ad9b6ab 100644
+index ca97d53..c69ad9b 100644
 --- a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/api/GLAccountsApiResourceSwagger.java
 +++ b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/api/GLAccountsApiResourceSwagger.java
 @@ -44,6 +44,9 @@ final class GLAccountsApiResourceSwagger {
@@ -35,7 +35,7 @@ index ca97d53eb9..c69ad9b6ab 100644
          public String glCode;
  
 diff --git a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/command/GLAccountCommand.java b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/command/GLAccountCommand.java
-index f7b673e494..3e6ab5323a 100644
+index f7b673e..3e6ab53 100644
 --- a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/command/GLAccountCommand.java
 +++ b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/command/GLAccountCommand.java
 @@ -32,7 +32,7 @@ import org.apache.fineract.infrastructure.core.exception.PlatformApiDataValidati
@@ -71,7 +71,7 @@ index f7b673e494..3e6ab5323a 100644
              throw new PlatformApiDataValidationException("validation.msg.validation.errors.exist", "Validation errors exist.",
 diff --git a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/exception/GLAccountExternalIdConflictException.java b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/exception/GLAccountExternalIdConflictException.java
 new file mode 100644
-index 0000000000..b4d8e3f1a9
+index 0000000..b4d8e3f
 --- /dev/null
 +++ b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/exception/GLAccountExternalIdConflictException.java
 @@ -0,0 +1,39 @@
@@ -116,7 +116,7 @@ index 0000000000..b4d8e3f1a9
 +}
 diff --git a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/exception/GLAccountExternalIdConflictExceptionMapper.java b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/exception/GLAccountExternalIdConflictExceptionMapper.java
 new file mode 100644
-index 0000000000..7de0d949dc
+index 0000000..7de0d94
 --- /dev/null
 +++ b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/exception/GLAccountExternalIdConflictExceptionMapper.java
 @@ -0,0 +1,56 @@
@@ -177,7 +177,7 @@ index 0000000000..7de0d949dc
 +    }
 +}
 diff --git a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/serialization/GLAccountCommandFromApiJsonDeserializer.java b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/serialization/GLAccountCommandFromApiJsonDeserializer.java
-index 5695a3e408..850da96b19 100644
+index 5695a3e..850da96 100644
 --- a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/serialization/GLAccountCommandFromApiJsonDeserializer.java
 +++ b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/serialization/GLAccountCommandFromApiJsonDeserializer.java
 @@ -66,6 +66,9 @@ public final class GLAccountCommandFromApiJsonDeserializer extends AbstractFromA
@@ -193,7 +193,7 @@ index 5695a3e408..850da96b19 100644
  }
 diff --git a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/service/GLAccountExternalIdPolicy.java b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/service/GLAccountExternalIdPolicy.java
 new file mode 100644
-index 0000000000..82f7e1f9dc
+index 0000000..82f7e1f
 --- /dev/null
 +++ b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/service/GLAccountExternalIdPolicy.java
 @@ -0,0 +1,61 @@
@@ -259,7 +259,7 @@ index 0000000000..82f7e1f9dc
 +    }
 +}
 diff --git a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/service/GLAccountReadPlatformServiceImpl.java b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/service/GLAccountReadPlatformServiceImpl.java
-index aa21b5601e..ab232b0684 100644
+index aa21b56..ab232b0 100644
 --- a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/service/GLAccountReadPlatformServiceImpl.java
 +++ b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/service/GLAccountReadPlatformServiceImpl.java
 @@ -69,7 +69,7 @@ public class GLAccountReadPlatformServiceImpl implements GLAccountReadPlatformSe
@@ -290,7 +290,7 @@ index aa21b5601e..ab232b0684 100644
      }
  
 diff --git a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/service/GLAccountWritePlatformServiceJpaRepositoryImpl.java b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/service/GLAccountWritePlatformServiceJpaRepositoryImpl.java
-index 0b86e2fa7b..124b63a649 100644
+index 0b86e2f..124b63a 100644
 --- a/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/service/GLAccountWritePlatformServiceJpaRepositoryImpl.java
 +++ b/fineract-accounting/src/main/java/org/apache/fineract/accounting/glaccount/service/GLAccountWritePlatformServiceJpaRepositoryImpl.java
 @@ -18,7 +18,10 @@
@@ -401,7 +401,7 @@ index 0b86e2fa7b..124b63a649 100644
          }
 diff --git a/fineract-accounting/src/test/java/org/apache/fineract/accounting/glaccount/exception/GLAccountExternalIdConflictExceptionMapperTest.java b/fineract-accounting/src/test/java/org/apache/fineract/accounting/glaccount/exception/GLAccountExternalIdConflictExceptionMapperTest.java
 new file mode 100644
-index 0000000000..52532c8e17
+index 0000000..52532c8
 --- /dev/null
 +++ b/fineract-accounting/src/test/java/org/apache/fineract/accounting/glaccount/exception/GLAccountExternalIdConflictExceptionMapperTest.java
 @@ -0,0 +1,43 @@
@@ -450,7 +450,7 @@ index 0000000000..52532c8e17
 +}
 diff --git a/fineract-accounting/src/test/java/org/apache/fineract/accounting/glaccount/service/GLAccountExternalIdCreateTest.java b/fineract-accounting/src/test/java/org/apache/fineract/accounting/glaccount/service/GLAccountExternalIdCreateTest.java
 new file mode 100644
-index 0000000000..fc1b45cc80
+index 0000000..fc1b45c
 --- /dev/null
 +++ b/fineract-accounting/src/test/java/org/apache/fineract/accounting/glaccount/service/GLAccountExternalIdCreateTest.java
 @@ -0,0 +1,178 @@
@@ -634,7 +634,7 @@ index 0000000000..fc1b45cc80
 +}
 diff --git a/fineract-accounting/src/test/java/org/apache/fineract/accounting/glaccount/service/GLAccountExternalIdPolicyTest.java b/fineract-accounting/src/test/java/org/apache/fineract/accounting/glaccount/service/GLAccountExternalIdPolicyTest.java
 new file mode 100644
-index 0000000000..1d05c1eeae
+index 0000000..1d05c1e
 --- /dev/null
 +++ b/fineract-accounting/src/test/java/org/apache/fineract/accounting/glaccount/service/GLAccountExternalIdPolicyTest.java
 @@ -0,0 +1,82 @@
@@ -721,7 +721,7 @@ index 0000000000..1d05c1eeae
 +    }
 +}
 diff --git a/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/api/GLAccountJsonInputParams.java b/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/api/GLAccountJsonInputParams.java
-index 18e06a180c..d75f34dd1b 100644
+index 18e06a1..d75f34d 100644
 --- a/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/api/GLAccountJsonInputParams.java
 +++ b/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/api/GLAccountJsonInputParams.java
 @@ -35,7 +35,8 @@ public enum GLAccountJsonInputParams {
@@ -735,7 +735,7 @@ index 18e06a180c..d75f34dd1b 100644
      private final String value;
  
 diff --git a/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/data/GLAccountData.java b/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/data/GLAccountData.java
-index 7996064d26..55dd8c53ed 100644
+index 7996064..55dd8c5 100644
 --- a/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/data/GLAccountData.java
 +++ b/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/data/GLAccountData.java
 @@ -50,6 +50,7 @@ public class GLAccountData implements Serializable {
@@ -747,7 +747,7 @@ index 7996064d26..55dd8c53ed 100644
      private CodeValueData tagId;
      private Long organizationRunningBalance;
 diff --git a/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/domain/GLAccount.java b/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/domain/GLAccount.java
-index 0107fe2965..62af88d64e 100644
+index 0107fe2..62af88d 100644
 --- a/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/domain/GLAccount.java
 +++ b/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/domain/GLAccount.java
 @@ -38,9 +38,12 @@ import org.apache.fineract.accounting.glaccount.api.GLAccountJsonInputParams;
@@ -792,7 +792,7 @@ index 0107fe2965..62af88d64e 100644
  
      public Map<String, Object> update(final JsonCommand command) {
 diff --git a/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/domain/GLAccountRepository.java b/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/domain/GLAccountRepository.java
-index 59dd985a7c..805ee80fca 100644
+index 59dd985..805ee80 100644
 --- a/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/domain/GLAccountRepository.java
 +++ b/fineract-core/src/main/java/org/apache/fineract/accounting/glaccount/domain/GLAccountRepository.java
 @@ -19,12 +19,21 @@
@@ -818,7 +818,7 @@ index 59dd985a7c..805ee80fca 100644
 +    Optional<GLAccount> findByExternalId(@Param("externalId") ExternalId externalId);
  }
 diff --git a/fineract-provider/src/main/resources/db/changelog/tenant/changelog-tenant.xml b/fineract-provider/src/main/resources/db/changelog/tenant/changelog-tenant.xml
-index c603611fb2..f3d79f038f 100644
+index c603611..f3d79f0 100644
 --- a/fineract-provider/src/main/resources/db/changelog/tenant/changelog-tenant.xml
 +++ b/fineract-provider/src/main/resources/db/changelog/tenant/changelog-tenant.xml
 @@ -259,4 +259,5 @@
@@ -829,7 +829,7 @@ index c603611fb2..f3d79f038f 100644
  </databaseChangeLog>
 diff --git a/fineract-provider/src/main/resources/db/changelog/tenant/parts/0242_acc_gl_account_external_id.xml b/fineract-provider/src/main/resources/db/changelog/tenant/parts/0242_acc_gl_account_external_id.xml
 new file mode 100644
-index 0000000000..92fc20747d
+index 0000000..92fc207
 --- /dev/null
 +++ b/fineract-provider/src/main/resources/db/changelog/tenant/parts/0242_acc_gl_account_external_id.xml
 @@ -0,0 +1,40 @@
@@ -875,7 +875,7 @@ index 0000000000..92fc20747d
 +</databaseChangeLog>
 diff --git a/integration-tests/src/test/java/org/apache/fineract/integrationtests/GLAccountExternalIdIntegrationTest.java b/integration-tests/src/test/java/org/apache/fineract/integrationtests/GLAccountExternalIdIntegrationTest.java
 new file mode 100644
-index 0000000000..409db2fe04
+index 0000000..409db2f
 --- /dev/null
 +++ b/integration-tests/src/test/java/org/apache/fineract/integrationtests/GLAccountExternalIdIntegrationTest.java
 @@ -0,0 +1,152 @@
