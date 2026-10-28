@@ -1,0 +1,1 @@
+"""Mock ERP application package."""

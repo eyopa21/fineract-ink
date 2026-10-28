@@ -1,0 +1,137 @@
+# Fintech Fineract assessment. Run `make help` for targets.
+SHELL := /bin/bash
+.DEFAULT_GOAL := help
+
+FINERACT_TAG      ?= 1.15.0
+FINERACT_IMAGE    ?= fineract-custom:$(FINERACT_TAG)
+UPSTREAM          := fineract-customization/upstream
+PATCH             := fineract-customization/gl-external-reference.patch
+PY_SERVICES       := mock-erp integration-service
+COMPOSE           := docker compose
+export FINERACT_IMAGE
+
+# JDK 21 for Gradle: prefer asdf's openjdk-21 when present, else the ambient JAVA_HOME.
+ASDF_JAVA := $(shell command -v asdf >/dev/null 2>&1 && asdf where java openjdk-21 2>/dev/null)
+GRADLE_ENV := $(if $(ASDF_JAVA),JAVA_HOME=$(ASDF_JAVA),)
+
+# uv: use the host binary when installed, else the official image (no host install needed).
+UV_HOST := $(shell command -v uv 2>/dev/null)
+define UV
+$(if $(UV_HOST),cd $(1) && uv,docker run --rm -v "$(CURDIR)/$(1):/app" -w /app -e UV_LINK_MODE=copy ghcr.io/astral-sh/uv:python3.12-bookworm-slim uv)
+endef
+
+.PHONY: help
+help: ## Show this help
+	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-24s\033[0m %s\n", $$1, $$2}'
+
+# ---------------------------------------------------------------- Fineract (Java)
+
+.PHONY: patch-export
+patch-export: ## Export the submodule's diff against the upstream tag into the patch file (new files included)
+	git -C $(UPSTREAM) add --intent-to-add --all
+	git -C $(UPSTREAM) diff $(FINERACT_TAG) > $(PATCH)
+	@wc -l $(PATCH)
+
+.PHONY: patch-apply
+patch-apply: ## Apply the patch to the clean submodule (no-op if empty or already applied)
+	@if [ ! -s $(PATCH) ]; then echo "patch is empty, nothing to apply"; \
+	elif git -C $(UPSTREAM) apply --reverse --check ../gl-external-reference.patch 2>/dev/null; then echo "patch already applied"; \
+	else git -C $(UPSTREAM) apply ../gl-external-reference.patch && echo "patch applied"; fi
+
+.PHONY: patch-check
+patch-check: ## Verify the patch applies cleanly to the pristine tag (uses a throwaway worktree, touches nothing)
+	@rm -rf /tmp/fineract-patch-check
+	git -C $(UPSTREAM) worktree add -q --detach /tmp/fineract-patch-check $(FINERACT_TAG)
+	git -C /tmp/fineract-patch-check apply --check --stat $(CURDIR)/$(PATCH) && echo "patch applies cleanly to $(FINERACT_TAG)"
+	git -C $(UPSTREAM) worktree remove --force /tmp/fineract-patch-check
+
+.PHONY: build-fineract
+build-fineract: ## Build $(FINERACT_IMAGE) from the submodule working tree with Jib (default path, ~5 min warm)
+	cd $(UPSTREAM) && $(GRADLE_ENV) ./gradlew :fineract-provider:jibDockerBuild -x test \
+		-Djib.to.image=$(firstword $(subst :, ,$(FINERACT_IMAGE))) -Djib.to.tags=$(lastword $(subst :, ,$(FINERACT_IMAGE)))
+
+.PHONY: build-fineract-docker
+build-fineract-docker: ## Build $(FINERACT_IMAGE) entirely inside Docker (no JDK on host, ~20 min cold)
+	docker build -f fineract-customization/Dockerfile --build-arg FINERACT_TAG=$(FINERACT_TAG) -t $(FINERACT_IMAGE) fineract-customization
+
+.PHONY: test-java
+test-java: ## Part A JUnit unit tests (no server needed, ~2 min)
+	cd $(UPSTREAM) && $(GRADLE_ENV) ./gradlew :fineract-accounting:test --tests '*GLAccountExternalId*' --tests '*GLAccountWritePlatformServiceJpaRepositoryImplTest'
+
+.PHONY: test-java-it
+test-java-it: ## Part A JUnit integration test against the running stack (make up first; first run generates the client, ~15 min)
+	cd $(UPSTREAM) && $(GRADLE_ENV) BACKEND_PROTOCOL=http BACKEND_HOST=localhost BACKEND_PORT=$(or $(FINERACT_PORT),8080) \
+		./gradlew :integration-tests:test -PcargoDisabled --max-workers=1 --tests 'org.apache.fineract.integrationtests.GLAccountExternalIdIntegrationTest'
+
+# ---------------------------------------------------------------- Python services
+
+.PHONY: lock
+lock: ## Regenerate uv.lock for both Python services
+	@for s in $(PY_SERVICES); do $(call UV,$$s) lock; done
+
+.PHONY: test-python
+test-python: ## Run pytest for both Python services
+	@for s in $(PY_SERVICES); do echo "== $$s"; $(call UV,$$s) run --frozen pytest || exit 1; done
+
+.PHONY: lint
+lint: ## ruff check + format check for both Python services
+	@for s in $(PY_SERVICES); do echo "== $$s"; $(call UV,$$s) run --frozen ruff check . && $(call UV,$$s) run --frozen ruff format --check . || exit 1; done
+
+.PHONY: typecheck
+typecheck: ## mypy --strict for both Python services
+	@for s in $(PY_SERVICES); do echo "== $$s"; $(call UV,$$s) run --frozen mypy app tests || exit 1; done
+
+.PHONY: check
+check: lint typecheck test-python ## lint + typecheck + tests
+
+# ---------------------------------------------------------------- Stack
+
+.PHONY: build
+build: ## Build the Python service images
+	$(COMPOSE) build
+
+.PHONY: up
+up: ## Start everything and wait for health (Fineract first boot ~5 min)
+	$(COMPOSE) up -d --build --wait
+
+.PHONY: down
+down: ## Stop the stack, keep data
+	$(COMPOSE) down
+
+.PHONY: reset
+reset: ## Stop the stack and delete all data (next `up` starts from an empty database)
+	$(COMPOSE) down -v --remove-orphans
+
+.PHONY: ps
+ps: ## Show service status
+	$(COMPOSE) ps
+
+.PHONY: logs
+logs: ## Tail logs (SVC=name to filter)
+	$(COMPOSE) logs -f $(SVC)
+
+.PHONY: psql
+psql: ## Open psql on DB=<fineract_default|erp|integration> (default fineract_default)
+	$(COMPOSE) exec postgres psql -U postgres -d $(or $(DB),fineract_default)
+
+.PHONY: demo-part-a
+demo-part-a: ## Part A: scripted demo of behaviours 1-4 against the running stack
+	./scripts/demo-part-a.sh
+
+.PHONY: setup
+setup: ## Part B: configure Fineract (office, currency, GL sync, loan product, API user)
+	@echo "TODO: implemented in Part B"
+
+# ---------------------------------------------------------------- Simulations (filled in Tier 2)
+
+.PHONY: simulate-lifecycle simulate-duplicates simulate-concurrency simulate-failures simulate-reconciliation
+simulate-lifecycle: ## Part D: run one loan end to end and capture state
+	@echo "TODO: Part D"
+simulate-duplicates: ## I1: same disbursement 4 times
+	@echo "TODO: Part I1"
+simulate-concurrency: ## I2/I3: parallel disbursements and repayments
+	@echo "TODO: Part I2/I3"
+simulate-failures: ## Part J: five failure scenarios
+	@echo "TODO: Part J"
+simulate-reconciliation: ## Part K: seed four outcomes and print the report
+	@echo "TODO: Part K"
