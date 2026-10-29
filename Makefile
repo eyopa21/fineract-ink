@@ -118,6 +118,10 @@ psql: ## Open psql on DB=<fineract_default|erp|integration> (default fineract_de
 demo-part-a: ## Part A: scripted demo of behaviours 1-4 against the running stack
 	./scripts/demo-part-a.sh
 
+.PHONY: demo-gl-sync
+demo-gl-sync: ## Part A (Python side): ERP chart -> Fineract GL sync, 4x idempotent, against the running stack
+	./scripts/demo-gl-sync.sh
+
 .PHONY: demo-part-g
 demo-part-g: ## Part G: scripted demo of the Mock ERP (idempotency, balance rule, balances, faults)
 	./scripts/demo-part-g.sh

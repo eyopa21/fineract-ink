@@ -1,0 +1,47 @@
+# GL sync demo (Python side of Part A), 2026-10-29T12:07:17Z
+# Integration Service on :8100 (local uvicorn), Fineract on :8080 (IDE instance), Mock ERP on :8101 (container)
+# Note: GL-1200 FAILED because a manual Swagger test had already created a GL account with externalId GL-1200
+#       under code 100001 (Fineract id 4). That is the Part A conflict rule doing its job; the FAILED row is
+#       retried on every sync and will turn SYNCED once that account is removed (no journal entries on it).
+
+== GL sync demo (demo-sync-75581)
+-- before: 12 accounts in ERP | 2 ERP-synced GL accounts in Fineract: ['GL-1200', 'GL-12005'] | 0 mapping rows, 0 SYNCED, 0 FAILED
+
+== 1. POST /api/accounts/sync
+   requested=12 created=11 replayed=0 already_synced=0 resolved_by_lookup=0 failed=1
+   GL-1100  1100     SYNCED        fineract_id=10   attempts=1 
+   GL-1200  1200     FAILED        fineract_id=None attempts=1 General Ledger Account with external reference GL-1200 already exists 
+   GL-1300  1300     SYNCED        fineract_id=11   attempts=1 
+   GL-DEMO-66188 1366188  SYNCED        fineract_id=12   attempts=1 
+   GL-DEMO-90134 1390134  SYNCED        fineract_id=13   attempts=1 
+   GL-DEMO-90147 1390147  SYNCED        fineract_id=14   attempts=1 
+   GL-2100  2100     SYNCED        fineract_id=15   attempts=1 
+   GL-4000  4000     SYNCED        fineract_id=16   attempts=1 
+   GL-4100  4100     SYNCED        fineract_id=17   attempts=1 
+   GL-4200  4200     SYNCED        fineract_id=18   attempts=1 
+   GL-4300  4300     SYNCED        fineract_id=19   attempts=1 
+   GL-5100  5100     SYNCED        fineract_id=20   attempts=1 
+-- after:  12 accounts in ERP | 10 ERP-synced GL accounts in Fineract: ['GL-1100', 'GL-1200', 'GL-12005', 'GL-1300', 'GL-2100', 'GL-4000', 'GL-4100', 'GL-4200', 'GL-4300', 'GL-5100'] | 12 mapping rows, 11 SYNCED, 1 FAILED
+
+== 2. Same sync 3 more times
+   call 1:
+   requested=12 created=0 replayed=0 already_synced=11 resolved_by_lookup=0 failed=1
+   call 2:
+   requested=12 created=0 replayed=0 already_synced=11 resolved_by_lookup=0 failed=1
+   call 3:
+   requested=12 created=0 replayed=0 already_synced=11 resolved_by_lookup=0 failed=1
+-- after:  12 accounts in ERP | 10 ERP-synced GL accounts in Fineract: ['GL-1100', 'GL-1200', 'GL-12005', 'GL-1300', 'GL-2100', 'GL-4000', 'GL-4100', 'GL-4200', 'GL-4300', 'GL-5100'] | 12 mapping rows, 11 SYNCED, 1 FAILED
+
+== 3. Fineract down (injected), then sync
+   requested=12 created=0 replayed=0 already_synced=11 resolved_by_lookup=0 failed=1
+   (SYNCED rows are never re-sent, so Fineract being down costs nothing once synced)
+
+== 4. Structured log sample
+-- done
+
+== Structured log trail (correlation_id demo-sync-*)
+{"external_reference": "GL-1200", "erp_code": "1200", "status": "FAILED", "error": "General Ledger Account with external reference GL-1200 already exists (GL code 100001) with a different payload", "event": "gl sync failed permanently", "co
+{"requested": 12, "created": 11, "replayed": 0, "already_synced": 0, "resolved_by_lookup": 0, "failed": 1, "event": "gl sync finished", "correlation_id": "demo-sync-75581", "path": "/api/accounts/sync", "method": "POST", "level": "info", "t
+{"external_reference": "GL-1200", "erp_code": "1200", "status": "FAILED", "error": "General Ledger Account with external reference GL-1200 already exists (GL code 100001) with a different payload", "event": "gl sync failed permanently", "co
+{"requested": 12, "created": 0, "replayed": 0, "already_synced": 11, "resolved_by_lookup": 0, "failed": 1, "event": "gl sync finished", "correlation_id": "demo-sync-75581", "path": "/api/accounts/sync", "method": "POST", "level": "info", "t
+{"external_reference": "GL-1200", "erp_code": "1200", "status": "FAILED", "error": "General Ledger Account with external reference GL-1200 already exists (GL code 100001) with a different payload", "event": "gl sync failed permanently", "co

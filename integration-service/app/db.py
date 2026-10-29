@@ -1,17 +1,27 @@
-"""SQLAlchemy engine and session factory."""
+"""SQLAlchemy engine, session factory and declarative base."""
 
 from collections.abc import Iterator
 from functools import lru_cache
+from typing import Any
 
 from sqlalchemy import Engine, create_engine, text
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from app.config import get_settings
 
 
+class Base(DeclarativeBase):
+    pass
+
+
 @lru_cache
 def get_engine() -> Engine:
-    return create_engine(get_settings().database_url, pool_pre_ping=True)
+    url = get_settings().database_url
+    kwargs: dict[str, Any] = {"pool_pre_ping": True}
+    if url.startswith("sqlite"):
+        kwargs = {"connect_args": {"check_same_thread": False}, "poolclass": StaticPool}
+    return create_engine(url, **kwargs)
 
 
 @lru_cache
