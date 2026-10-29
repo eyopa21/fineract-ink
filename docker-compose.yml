@@ -83,6 +83,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql+psycopg://erp:erp@postgres:5432/erp
+      API_KEY: erp-demo-key
       LOG_LEVEL: INFO
     ports:
       - "${MOCK_ERP_PORT:-8101}:8000"
@@ -111,6 +112,7 @@ services:
       FINERACT_USERNAME: mifos
       FINERACT_PASSWORD: password
       ERP_BASE_URL: http://mock-erp:8000
+      ERP_API_KEY: erp-demo-key
       API_KEY: partner-demo-key
       LOG_LEVEL: INFO
     ports:

@@ -17,7 +17,7 @@ GRADLE_ENV := $(if $(ASDF_JAVA),JAVA_HOME=$(ASDF_JAVA),)
 # uv: use the host binary when installed, else the official image (no host install needed).
 UV_HOST := $(shell command -v uv 2>/dev/null)
 define UV
-$(if $(UV_HOST),cd $(1) && uv,docker run --rm -v "$(CURDIR)/$(1):/app" -w /app -e UV_LINK_MODE=copy ghcr.io/astral-sh/uv:python3.12-bookworm-slim uv)
+$(if $(UV_HOST),uv --directory $(1),docker run --rm -v "$(CURDIR)/$(1):/app" -w /app -e UV_LINK_MODE=copy ghcr.io/astral-sh/uv:python3.12-bookworm-slim uv)
 endef
 
 .PHONY: help
@@ -117,6 +117,10 @@ psql: ## Open psql on DB=<fineract_default|erp|integration> (default fineract_de
 .PHONY: demo-part-a
 demo-part-a: ## Part A: scripted demo of behaviours 1-4 against the running stack
 	./scripts/demo-part-a.sh
+
+.PHONY: demo-part-g
+demo-part-g: ## Part G: scripted demo of the Mock ERP (idempotency, balance rule, balances, faults)
+	./scripts/demo-part-g.sh
 
 .PHONY: setup
 setup: ## Part B: configure Fineract (office, currency, GL sync, loan product, API user)

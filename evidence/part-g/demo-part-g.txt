@@ -1,0 +1,74 @@
+== Part G demo against http://localhost:8101 (suffix 66188)
+
+== Seeded chart of accounts
+    1100 ASSET     Bank  GL-1100
+    1200 ASSET     Loan Receivable  GL-1200
+    1300 ASSET     Transfers in Suspense  GL-1300
+    1390134 ASSET     Demo Receivable  GL-DEMO-90134
+    1390147 ASSET     Demo Receivable  GL-DEMO-90147
+    2100 LIABILITY Overpayment Liability  GL-2100
+    4000 INCOME    Interest Income  GL-4000
+    4100 INCOME    Fee Income  GL-4100
+    4200 INCOME    Penalty Income  GL-4200
+    4300 INCOME    Recoveries on Written-off Loans  GL-4300
+    5100 EXPENSE   Loan Write-off Expense  GL-5100
+-- accounts: 11
+
+== 1. POST /api/accounts, new reference GL-DEMO-66188
+   HTTP 201  {"code":"1366188","name":"Demo Receivable","type":"ASSET","currency":"RWF","external_reference":"GL-DEMO-66188","created_at":"2026-10-29T09:29:48.857091Z"}
+
+== 2. Same payload 3 more times
+   attempt 1: HTTP 200
+   attempt 2: HTTP 200
+   attempt 3: HTTP 200
+-- accounts carrying GL-DEMO-66188: 1   (expected 1)
+
+== 3. Same reference, different name
+   HTTP 409  {"error":{"code":"CONFLICT","message":"external_reference GL-DEMO-66188 already exists with a different payload","details":[{"field":"external_reference","existing_code":"1366188"}]},"correlation_id":"demo-g-66188"}
+
+== 4. Same code, different reference (DB uniqueness on code)
+   HTTP 409  {"error":{"code":"CONFLICT","message":"account code 1366188 already exists under a different external_reference","details":[{"field":"code","value":"1366188"}]},"correlation_id":"demo-g-66188"}
+
+-- accounts: 12
+
+== 5. Balances before
+   1100: {"code":"1100","type":"ASSET","currency":"RWF","debits":"0","credits":"20000000.00","balance":"-20000000.00","balance_side":"CREDIT","balance_amount":"20000000.00","entry_count":4}
+   1200: {"code":"1200","type":"ASSET","currency":"RWF","debits":"20000000.00","credits":"0","balance":"20000000.00","balance_side":"DEBIT","balance_amount":"20000000.00","entry_count":4}
+
+== 6. POST /api/journal-entries, unbalanced (credit 4,000,000)
+   HTTP 422  {"error":{"code":"VALIDATION_ERROR","message":"request validation failed","details":[{"loc":["body"],"msg":"Value error, entry does not balance: debits 5000000.00 != credits 4000000.00"}]},"correlation_id":"demo-g-66188"}
+
+== 7. POST /api/journal-entries, balanced
+   HTTP 201  {"entry_id":6,"external_reference":"LN-DEMO-66188-DISB","entry_date":"2026-01-15","description":"Disbursement demo","currency":"RWF","status":"POSTED","total_debits":"5000000.00","total_credits":"5000000.00","lines":[{"account_code":"1200","direction":"DEBIT","amount":"5000000.00"},{"account_code":"1100","direction":"CREDIT","amount":"5000000.00"}],"metadata":{"loan_reference":"LN-DEMO-66188","tra
+
+== 8. Same entry 3 more times
+   attempt 1: HTTP 200 entry_id=6
+   attempt 2: HTTP 200 entry_id=6
+   attempt 3: HTTP 200 entry_id=6
+== 9. Same reference, different amount
+   HTTP 409  {"error":{"code":"CONFLICT","message":"external_reference LN-DEMO-66188-DISB already exists with a different payload","details":[{"field":"external_reference","existing_entry_id":6}]},"correlation_id":"demo-g-66188"}
+
+== 10. GET /api/journal-entries/LN-DEMO-66188-DISB
+   HTTP 200  {"entry_id":6,"external_reference":"LN-DEMO-66188-DISB","entry_date":"2026-01-15","description":"Disbursement demo","currency":"RWF","status":"POSTED","total_debits":"5000000.00","total_credits":"5000000.00","lines":[{"account_code":"1200","direction":"DEBIT","amount":"5000000.00"},{"account_code":"1100","direction":"CREDIT","amount":"5000000.00"}],"metadata":{"loan_reference":"LN-DEMO-66188","tra
+
+== 11. Balances after (one entry of 5,000,000 applied once)
+   1100: {"code":"1100","type":"ASSET","currency":"RWF","debits":"0","credits":"25000000.00","balance":"-25000000.00","balance_side":"CREDIT","balance_amount":"25000000.00","entry_count":5}
+   1200: {"code":"1200","type":"ASSET","currency":"RWF","debits":"25000000.00","credits":"0","balance":"25000000.00","balance_side":"DEBIT","balance_amount":"25000000.00","entry_count":5}
+-- entries carrying LN-DEMO-66188-DISB in DB: 1   (expected 1)
+
+== 12. Fault injection: down
+   HTTP 503  {"error":{"code":"SERVICE_UNAVAILABLE","message":"ERP is down (injected fault)","details":[]},"correlation_id":"demo-g-66188"}
+
+== 13. Fault injection: timeout_after_write (1s), then retry after the timeout
+   first call: HTTP 201 (took >1s, entry_id=7)
+   retry:      HTTP 200 entry_id=7
+-- entries carrying LN-DEMO-66188-R1 in DB: 1   (expected 1)
+
+== 14. Structured log sample (correlation_id demo-g-66188)
+{"external_reference": "GL-DEMO-66188", "status": "REPLAYED", "event": "account create replayed", "method": "POST", "correlation_id": "demo-g-66188", "path": "/api/accounts", "level": "info", "timestamp": "2026-10-29T09:29:48.8856
+{"external_reference": "GL-DEMO-66188", "status": "REPLAYED", "event": "account create replayed", "method": "POST", "correlation_id": "demo-g-66188", "path": "/api/accounts", "level": "info", "timestamp": "2026-10-29T09:29:48.9029
+{"external_reference": "GL-DEMO-66188", "status": "REPLAYED", "event": "account create replayed", "method": "POST", "correlation_id": "demo-g-66188", "path": "/api/accounts", "level": "info", "timestamp": "2026-10-29T09:29:48.9198
+{"external_reference": "GL-DEMO-66188", "status": "CONFLICT", "event": "account conflict", "method": "POST", "correlation_id": "demo-g-66188", "path": "/api/accounts", "level": "warning", "timestamp": "2026-10-29T09:29:48.988580Z"
+{"external_reference": "LN-DEMO-66188-DISB", "erp_transaction_id": 6, "status": "POSTED", "event": "journal entry posted", "method": "POST", "correlation_id": "demo-g-66188", "path": "/api/journal-entries", "level": "info", "times
+
+== done
