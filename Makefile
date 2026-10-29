@@ -1,5 +1,6 @@
 # Fintech Fineract assessment. Run `make help` for targets.
 SHELL := /bin/bash
+.SHELLFLAGS := -o pipefail -c
 .DEFAULT_GOAL := help
 
 FINERACT_TAG      ?= 1.15.0
@@ -127,8 +128,14 @@ demo-part-g: ## Part G: scripted demo of the Mock ERP (idempotency, balance rule
 	./scripts/demo-part-g.sh
 
 .PHONY: setup
-setup: ## Part B: configure Fineract (office, currency, GL sync, loan product, API user)
-	@echo "TODO: implemented in Part B"
+setup: ## Part B: configure Fineract inside the stack (office, currency, GL sync, loan product, API user); idempotent
+	@mkdir -p evidence/part-b
+	$(COMPOSE) exec -T integration-service python -m app.setup | tee evidence/part-b/setup-report.json
+
+.PHONY: setup-local
+setup-local: ## Part B against Fineract on localhost (IDE instance) using integration-service/.env
+	@mkdir -p evidence/part-b
+	uv --directory integration-service run --frozen python -m app.setup | tee evidence/part-b/setup-report.json
 
 # ---------------------------------------------------------------- Simulations (filled in Tier 2)
 

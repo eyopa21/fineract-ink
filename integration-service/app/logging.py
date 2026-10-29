@@ -8,6 +8,9 @@ import structlog
 
 def configure_logging(level: str) -> None:
     logging.basicConfig(format="%(message)s", stream=sys.stdout, level=level.upper())
+    # third-party chatter stays out of the structured stream even at DEBUG
+    for noisy in ("httpx", "httpcore", "uvicorn", "sqlalchemy.engine", "alembic"):
+        logging.getLogger(noisy).setLevel(logging.WARNING)
     structlog.configure(
         processors=[
             structlog.contextvars.merge_contextvars,

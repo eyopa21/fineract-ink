@@ -1,0 +1,20 @@
+# make setup-local, 2026-10-29T12:41:56Z: halts because GL-1200 is FAILED (stray manual-test account in Fineract)
+{"external_reference": "GL-1100", "erp_code": "1100", "status": "SYNCED", "fineract_gl_account_id": 10, "event": "gl sync skipped", "level": "info", "timestamp": "2026-10-29T12:41:56.254410Z"}
+{"external_reference": "GL-1200", "erp_code": "1200", "status": "FAILED", "error": "General Ledger Account with external reference GL-1200 already exists (GL code 100001) with a different payload", "event": "gl sync failed permanently", "level": "error", "timestamp": "2026-10-29T12:41:56.322460Z"}
+{"external_reference": "GL-1300", "erp_code": "1300", "status": "SYNCED", "fineract_gl_account_id": 11, "event": "gl sync skipped", "level": "info", "timestamp": "2026-10-29T12:41:56.324511Z"}
+{"external_reference": "GL-DEMO-66188", "erp_code": "1366188", "status": "SYNCED", "fineract_gl_account_id": 12, "event": "gl sync skipped", "level": "info", "timestamp": "2026-10-29T12:41:56.326169Z"}
+{"external_reference": "GL-DEMO-90134", "erp_code": "1390134", "status": "SYNCED", "fineract_gl_account_id": 13, "event": "gl sync skipped", "level": "info", "timestamp": "2026-10-29T12:41:56.327924Z"}
+{"external_reference": "GL-DEMO-90147", "erp_code": "1390147", "status": "SYNCED", "fineract_gl_account_id": 14, "event": "gl sync skipped", "level": "info", "timestamp": "2026-10-29T12:41:56.330934Z"}
+{"external_reference": "GL-2100", "erp_code": "2100", "status": "SYNCED", "fineract_gl_account_id": 15, "event": "gl sync skipped", "level": "info", "timestamp": "2026-10-29T12:41:56.333904Z"}
+{"external_reference": "GL-4000", "erp_code": "4000", "status": "SYNCED", "fineract_gl_account_id": 16, "event": "gl sync skipped", "level": "info", "timestamp": "2026-10-29T12:41:56.336090Z"}
+{"external_reference": "GL-4100", "erp_code": "4100", "status": "SYNCED", "fineract_gl_account_id": 17, "event": "gl sync skipped", "level": "info", "timestamp": "2026-10-29T12:41:56.338449Z"}
+{"external_reference": "GL-4200", "erp_code": "4200", "status": "SYNCED", "fineract_gl_account_id": 18, "event": "gl sync skipped", "level": "info", "timestamp": "2026-10-29T12:41:56.341840Z"}
+{"external_reference": "GL-4300", "erp_code": "4300", "status": "SYNCED", "fineract_gl_account_id": 19, "event": "gl sync skipped", "level": "info", "timestamp": "2026-10-29T12:41:56.344394Z"}
+{"external_reference": "GL-5100", "erp_code": "5100", "status": "SYNCED", "fineract_gl_account_id": 20, "event": "gl sync skipped", "level": "info", "timestamp": "2026-10-29T12:41:56.346793Z"}
+{"external_reference": "string", "erp_code": "FvFERoXH3o2gOZmBolbM", "status": "SYNCED", "fineract_gl_account_id": 21, "event": "gl sync skipped", "level": "info", "timestamp": "2026-10-29T12:41:56.348750Z"}
+{"requested": 13, "created": 0, "replayed": 0, "already_synced": 12, "resolved_by_lookup": 0, "failed": 1, "event": "gl sync finished", "level": "info", "timestamp": "2026-10-29T12:41:56.348811Z"}
+{"error": "GL accounts the loan product needs are not SYNCED; fix and re-run setup: {\"GL-1200\": {\"status\": \"FAILED\", \"last_error\": \"General Ledger Account with external reference GL-1200 already exists (GL code 100001) with a different payload\"}}", "event": "setup failed", "level": "error", "timestamp": "2026-10-29T12:41:56.352266Z"}
+{
+  "status": "FAILED",
+  "error": "GL accounts the loan product needs are not SYNCED; fix and re-run setup: {\"GL-1200\": {\"status\": \"FAILED\", \"last_error\": \"General Ledger Account with external reference GL-1200 already exists (GL code 100001) with a different payload\"}}"
+}

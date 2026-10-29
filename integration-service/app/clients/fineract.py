@@ -56,13 +56,28 @@ class FineractGateway(Protocol):
     ) -> int | None: ...
 
 
+class FineractAdminGateway(FineractGateway, Protocol):
+    """Generic verbs used by the Part B setup command."""
+
+    def get(self, path: str, correlation_id: str) -> tuple[int, Any]: ...
+
+    def post(self, path: str, payload: dict[str, Any], correlation_id: str) -> tuple[int, Any]: ...
+
+    def put(self, path: str, payload: dict[str, Any], correlation_id: str) -> tuple[int, Any]: ...
+
+
 class FineractClient:
-    def __init__(self, settings: Settings | None = None):
+    def __init__(
+        self,
+        settings: Settings | None = None,
+        username: str | None = None,
+        password: str | None = None,
+    ):
         self._settings = settings or get_settings()
         s = self._settings
         self._http = httpx.Client(
             base_url=s.fineract_base_url,
-            auth=(s.fineract_username, s.fineract_password),
+            auth=(username or s.fineract_username, password or s.fineract_password),
             headers={
                 "Fineract-Platform-TenantId": s.fineract_tenant_id,
                 "Accept": "application/json",
@@ -118,6 +133,19 @@ class FineractClient:
             if account.get("externalId") == external_id:
                 return int(account["id"])
         return None
+
+    # generic verbs for configuration (Part B setup) and lookups; faults and timeouts apply
+    def get(self, path: str, correlation_id: str) -> tuple[int, Any]:
+        response = self._request("GET", path, correlation_id)
+        return response.status_code, (response.json() if response.content else None)
+
+    def post(self, path: str, payload: dict[str, Any], correlation_id: str) -> tuple[int, Any]:
+        response = self._request("POST", path, correlation_id, json=payload)
+        return response.status_code, (response.json() if response.content else None)
+
+    def put(self, path: str, payload: dict[str, Any], correlation_id: str) -> tuple[int, Any]:
+        response = self._request("PUT", path, correlation_id, json=payload)
+        return response.status_code, (response.json() if response.content else None)
 
     def close(self) -> None:
         self._http.close()

@@ -1,0 +1,68 @@
+# Fineract state after make setup-local, 2026-10-29T13:12:08Z
+
+== Office
+{'id': 1, 'name': 'Kigali Main Office', 'externalId': '1', 'openingDate': [2009, 1, 1]}
+
+== Currencies enabled
+[('RWF', 0, 'Rwanda Franc'), ('USD', 2, 'US Dollar')]
+
+== Loan product 1 (SME Asset Finance)
+  id                                 1
+  name                               SME Asset Finance
+  shortName                          SMEA
+  currency                           RWF
+  principal                          5000000.0
+  minPrincipal                       100000.0
+  maxPrincipal                       50000000.0
+  numberOfRepayments                 12
+  repaymentEvery                     1
+  repaymentFrequencyType             Months
+  interestRatePerPeriod              18.0
+  interestRateFrequencyType          Per year
+  annualInterestRate                 18.0
+  amortizationType                   Equal installments
+  interestType                       Declining Balance
+  interestCalculationPeriodType      Same as repayment period
+  daysInYearType                     365 Days
+  daysInMonthType                    30 Days
+  multiDisburseLoan                  False
+  accountingRule                     CASH BASED
+  transactionProcessingStrategyCode  mifos-standard-strategy
+  loanScheduleType                   Cumulative
+  accountingMappings:
+    chargeOffExpenseAccount                    id=20  Loan Write-off Expense (5100)
+    chargeOffFraudExpenseAccount               id=20  Loan Write-off Expense (5100)
+    fundSourceAccount                          id=10  Bank (1100)
+    goodwillCreditAccount                      id=20  Loan Write-off Expense (5100)
+    incomeFromChargeOffFeesAccount             id=17  Fee Income (4100)
+    incomeFromChargeOffInterestAccount         id=16  Interest Income (4000)
+    incomeFromChargeOffPenaltyAccount          id=18  Penalty Income (4200)
+    incomeFromFeeAccount                       id=17  Fee Income (4100)
+    incomeFromGoodwillCreditFeesAccount        id=17  Fee Income (4100)
+    incomeFromGoodwillCreditInterestAccount    id=16  Interest Income (4000)
+    incomeFromGoodwillCreditPenaltyAccount     id=18  Penalty Income (4200)
+    incomeFromPenaltyAccount                   id=18  Penalty Income (4200)
+    incomeFromRecoveryAccount                  id=19  Recoveries on Written-off Loans (4300)
+    interestOnLoanAccount                      id=16  Interest Income (4000)
+    loanPortfolioAccount                       id=22  Loan Receivable (1200)
+    overpaymentLiabilityAccount                id=15  Overpayment Liability (2100)
+    transfersInSuspenseAccount                 id=11  Transfers in Suspense (1300)
+    writeOffAccount                            id=20  Loan Write-off Expense (5100)
+
+== GL accounts carrying ERP references
+  id=6   code=100005 Cash at Bangalore                GL-12005
+  id=10  code=1100   Bank                             GL-1100
+  id=22  code=1200   Loan Receivable                  GL-1200
+  id=11  code=1300   Transfers in Suspense            GL-1300
+  id=15  code=2100   Overpayment Liability            GL-2100
+  id=16  code=4000   Interest Income                  GL-4000
+  id=17  code=4100   Fee Income                       GL-4100
+  id=18  code=4200   Penalty Income                   GL-4200
+  id=19  code=4300   Recoveries on Written-off Loans  GL-4300
+  id=20  code=5100   Loan Write-off Expense           GL-5100
+
+== Role integration-service (id 7) permissions
+   ['ACTIVATE_CLIENT', 'APPROVE_LOAN', 'CREATE_CLIENT', 'CREATE_GLACCOUNT', 'CREATE_LOAN', 'DISBURSE_LOAN', 'READ_CLIENT', 'READ_CURRENCY', 'READ_GLACCOUNT', 'READ_JOURNALENTRY', 'READ_LOAN', 'READ_LOANPRODUCT', 'READ_OFFICE', 'READ_PAYMENTTYPE', 'REPAYMENT_LOAN']
+
+== User integration-api
+   {'id': 8, 'username': 'integration-api', 'officeName': 'Kigali Main Office'} ['integration-service']

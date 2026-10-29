@@ -108,9 +108,13 @@ services:
       DATABASE_URL: postgresql+psycopg://integration:integration@postgres:5432/integration
       FINERACT_BASE_URL: http://fineract:8080/fineract-provider/api/v1
       FINERACT_TENANT_ID: default
-      # Bootstrap admin; the Part B setup replaces it with a least-privilege API user.
-      FINERACT_USERNAME: mifos
-      FINERACT_PASSWORD: password
+      # Runtime user: least privilege, created by `make setup` (Part B). Until setup has run,
+      # Fineract calls from the service answer 401.
+      FINERACT_USERNAME: integration-api
+      FINERACT_PASSWORD: Integr8tion#2026
+      # Admin credentials used only by `python -m app.setup`
+      FINERACT_ADMIN_USERNAME: mifos
+      FINERACT_ADMIN_PASSWORD: password
       ERP_BASE_URL: http://mock-erp:8000
       ERP_API_KEY: erp-demo-key
       API_KEY: partner-demo-key

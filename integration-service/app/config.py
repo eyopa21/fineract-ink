@@ -18,6 +18,18 @@ class Settings(BaseSettings):
     fineract_username: str = "mifos"
     fineract_password: str = "password"
     fineract_connect_timeout_s: float = 3.0
+    # Admin credentials used ONLY by `python -m app.setup` (Part B). Runtime calls use the
+    # least-privilege API user above, which setup creates.
+    fineract_admin_username: str = "mifos"
+    fineract_admin_password: str = "password"
+    # Part B configuration
+    office_name: str = "Kigali Main Office"
+    currency_code: str = "RWF"
+    loan_product_name: str = "SME Asset Finance"
+    loan_product_short_name: str = "SMEA"
+    api_role_name: str = "integration-service"
+    api_user_username: str = "integration-api"
+    api_user_password: str = "Integr8tion#2026"
     fineract_read_timeout_s: float = 15.0
 
     erp_base_url: str = "http://localhost:8101"
