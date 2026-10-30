@@ -3,7 +3,7 @@
 from functools import lru_cache
 
 from app.clients.erp import ErpClient, ErpGateway
-from app.clients.fineract import FineractClient, FineractGateway
+from app.clients.fineract import FineractClient, FineractLoanGateway
 
 
 @lru_cache
@@ -16,7 +16,7 @@ def _erp_singleton() -> ErpClient:
     return ErpClient()
 
 
-def get_fineract() -> FineractGateway:
+def get_fineract() -> FineractLoanGateway:
     return _fineract_singleton()
 
 

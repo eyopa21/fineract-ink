@@ -56,6 +56,36 @@ class FineractGateway(Protocol):
     ) -> int | None: ...
 
 
+class FineractLoanGateway(FineractGateway, Protocol):
+    """Clients, loans and loan transactions, addressed by external ids wherever Fineract allows."""
+
+    def create_client(self, payload: dict[str, Any], correlation_id: str) -> int: ...
+
+    def get_client_by_external_id(
+        self, client_uid: str, correlation_id: str
+    ) -> dict[str, Any] | None: ...
+
+    def create_loan(self, payload: dict[str, Any], correlation_id: str) -> int: ...
+
+    def loan_command_by_external_id(
+        self, loan_reference: str, command: str, payload: dict[str, Any], correlation_id: str
+    ) -> dict[str, Any]: ...
+
+    def loan_transaction_by_external_id(
+        self, loan_reference: str, command: str, payload: dict[str, Any], correlation_id: str
+    ) -> dict[str, Any]: ...
+
+    def get_loan_by_external_id(
+        self, loan_reference: str, correlation_id: str
+    ) -> dict[str, Any] | None: ...
+
+    def get_loan_transaction_by_external_ids(
+        self, loan_reference: str, transaction_reference: str, correlation_id: str
+    ) -> dict[str, Any] | None: ...
+
+    def find_loan_product_id(self, name: str, correlation_id: str) -> int | None: ...
+
+
 class FineractAdminGateway(FineractGateway, Protocol):
     """Generic verbs used by the Part B setup command."""
 
@@ -132,6 +162,85 @@ class FineractClient:
         for account in response.json():
             if account.get("externalId") == external_id:
                 return int(account["id"])
+        return None
+
+    # ---- clients, loans, transactions (Parts C, D, E) ---------------------------------------
+    def _checked(self, response: httpx.Response, allow_404: bool = False) -> Any:
+        body = response.json() if response.content else {}
+        if response.status_code == 404 and allow_404:
+            return None
+        if response.status_code == 409:
+            raise FineractConflictError(body.get("defaultUserMessage", "conflict"), body)
+        if response.status_code >= 400:
+            raise FineractClientError(response.status_code, body)
+        return body
+
+    def create_client(self, payload: dict[str, Any], correlation_id: str) -> int:
+        body = self._checked(self._request("POST", "/clients", correlation_id, json=payload))
+        return int(body["clientId"] if "clientId" in body else body["resourceId"])
+
+    def get_client_by_external_id(
+        self, client_uid: str, correlation_id: str
+    ) -> dict[str, Any] | None:
+        response = self._request("GET", f"/clients/external-id/{client_uid}", correlation_id)
+        result: dict[str, Any] | None = self._checked(response, allow_404=True)
+        return result
+
+    def create_loan(self, payload: dict[str, Any], correlation_id: str) -> int:
+        body = self._checked(self._request("POST", "/loans", correlation_id, json=payload))
+        return int(body["loanId"] if "loanId" in body else body["resourceId"])
+
+    def loan_command_by_external_id(
+        self, loan_reference: str, command: str, payload: dict[str, Any], correlation_id: str
+    ) -> dict[str, Any]:
+        response = self._request(
+            "POST",
+            f"/loans/external-id/{loan_reference}?command={command}",
+            correlation_id,
+            json=payload,
+        )
+        result: dict[str, Any] = self._checked(response)
+        return result
+
+    def loan_transaction_by_external_id(
+        self, loan_reference: str, command: str, payload: dict[str, Any], correlation_id: str
+    ) -> dict[str, Any]:
+        response = self._request(
+            "POST",
+            f"/loans/external-id/{loan_reference}/transactions?command={command}",
+            correlation_id,
+            json=payload,
+        )
+        result: dict[str, Any] = self._checked(response)
+        return result
+
+    def get_loan_by_external_id(
+        self, loan_reference: str, correlation_id: str
+    ) -> dict[str, Any] | None:
+        response = self._request(
+            "GET",
+            f"/loans/external-id/{loan_reference}?associations=transactions,repaymentSchedule",
+            correlation_id,
+        )
+        result: dict[str, Any] | None = self._checked(response, allow_404=True)
+        return result
+
+    def get_loan_transaction_by_external_ids(
+        self, loan_reference: str, transaction_reference: str, correlation_id: str
+    ) -> dict[str, Any] | None:
+        response = self._request(
+            "GET",
+            f"/loans/external-id/{loan_reference}/transactions/external-id/{transaction_reference}",
+            correlation_id,
+        )
+        result: dict[str, Any] | None = self._checked(response, allow_404=True)
+        return result
+
+    def find_loan_product_id(self, name: str, correlation_id: str) -> int | None:
+        products = self._checked(self._request("GET", "/loanproducts", correlation_id))
+        for product in products:
+            if product.get("name") == name:
+                return int(product["id"])
         return None
 
     # generic verbs for configuration (Part B setup) and lookups; faults and timeouts apply

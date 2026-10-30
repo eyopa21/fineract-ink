@@ -140,8 +140,9 @@ setup-local: ## Part B against Fineract on localhost (IDE instance) using integr
 # ---------------------------------------------------------------- Simulations (filled in Tier 2)
 
 .PHONY: simulate-lifecycle simulate-duplicates simulate-concurrency simulate-failures simulate-reconciliation
-simulate-lifecycle: ## Part D: run one loan end to end and capture state
-	@echo "TODO: Part D"
+simulate-lifecycle: ## Part D: one loan end to end (client -> loan -> disburse -> 3 repayments -> payoff -> Closed), state after every stage
+	@mkdir -p evidence/part-d
+	./scripts/demo-part-d.sh | tee evidence/part-d/lifecycle.txt
 simulate-duplicates: ## I1: same disbursement 4 times
 	@echo "TODO: Part I1"
 simulate-concurrency: ## I2/I3: parallel disbursements and repayments

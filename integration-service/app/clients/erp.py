@@ -1,5 +1,6 @@
 """HTTP client for the Mock ERP."""
 
+from dataclasses import dataclass
 from typing import Any, Protocol
 
 import httpx
@@ -24,8 +25,26 @@ class ErpClientError(Exception):
         self.body = body
 
 
+@dataclass(frozen=True)
+class JournalEntryResult:
+    entry_id: int
+    replayed: bool
+
+
+class ErpConflictError(Exception):
+    """409: same external_reference, different payload."""
+
+
 class ErpGateway(Protocol):
     def list_accounts(self, correlation_id: str) -> list[ErpAccount]: ...
+
+    def post_journal_entry(
+        self, payload: dict[str, Any], correlation_id: str
+    ) -> JournalEntryResult: ...
+
+    def get_journal_entry(
+        self, external_reference: str, correlation_id: str
+    ) -> dict[str, Any] | None: ...
 
 
 class ErpClient:
@@ -70,6 +89,32 @@ class ErpClient:
             )
             for a in response.json()
         ]
+
+    def post_journal_entry(
+        self, payload: dict[str, Any], correlation_id: str
+    ) -> JournalEntryResult:
+        response = self._request("POST", "/api/journal-entries", correlation_id, json=payload)
+        body = response.json() if response.content else {}
+        if response.status_code == 409:
+            raise ErpConflictError(str(body))
+        if response.status_code >= 400:
+            raise ErpClientError(response.status_code, body)
+        return JournalEntryResult(
+            entry_id=int(body["entry_id"]), replayed=response.status_code == 200
+        )
+
+    def get_journal_entry(
+        self, external_reference: str, correlation_id: str
+    ) -> dict[str, Any] | None:
+        response = self._request(
+            "GET", f"/api/journal-entries/{external_reference}", correlation_id
+        )
+        if response.status_code == 404:
+            return None
+        if response.status_code >= 400:
+            raise ErpClientError(response.status_code, response.json() if response.content else {})
+        result: dict[str, Any] = response.json()
+        return result
 
     def close(self) -> None:
         self._http.close()

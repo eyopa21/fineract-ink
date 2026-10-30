@@ -40,6 +40,8 @@ class Settings(BaseSettings):
     # transient-failure retry inside one sync call: attempts and base backoff (doubles each time)
     sync_max_attempts: int = 3
     sync_backoff_s: float = 0.5
+    # Part J: run the recovery sweep when the process starts
+    recover_on_startup: bool = True
 
 
 @lru_cache

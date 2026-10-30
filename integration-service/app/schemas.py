@@ -38,3 +38,162 @@ class FaultConfig(BaseModel):
     mode: str = Field(
         pattern=r"^(none|fineract_down|fineract_timeout_after_send|erp_down|crash_after_fineract)$"
     )
+
+
+# --------------------------------------------------------------------------- Parts C, E, F
+
+from datetime import date  # noqa: E402
+from decimal import Decimal  # noqa: E402
+from typing import Annotated, Any  # noqa: E402
+
+from pydantic import StringConstraints  # noqa: E402
+
+from app.models import OperationType, TxState  # noqa: E402
+
+Reference = Annotated[
+    str, StringConstraints(min_length=1, max_length=100, pattern=r"^[A-Za-z0-9._:-]+$")
+]
+ClientUid = Annotated[
+    str, StringConstraints(min_length=1, max_length=50, pattern=r"^[A-Za-z0-9._-]+$")
+]
+Money = Annotated[Decimal, Field(gt=0, max_digits=19, decimal_places=2)]
+
+
+class ClientCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    external_reference: Reference
+    client_uid: ClientUid
+    full_name: Annotated[str, StringConstraints(min_length=2, max_length=200)]
+    activation_date: date
+
+
+class ClientOut(BaseModel):
+    client_uid: str
+    full_name: str
+    status: str
+    active: bool
+    activation_date: date | None
+    office: str | None
+
+
+class LoanApplication(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    external_reference: Reference
+    client_uid: ClientUid
+    principal: Money
+    submitted_on: date
+    expected_disbursement_date: date
+    approve: bool = True
+
+
+class LoanApproval(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    external_reference: Reference
+    approved_on: date
+
+
+class LoanApproved(BaseModel):
+    loan_reference: str
+    status: str
+    approved_on: date
+
+
+class LoanCreated(BaseModel):
+    loan_reference: str
+    client_uid: str
+    principal: Decimal
+    status: str
+
+
+class LoanStatus(BaseModel):
+    code: str | None
+    value: str | None
+    active: bool | None
+    closed_obligations_met: bool | None
+
+
+class LoanBalances(BaseModel):
+    principal_disbursed: Decimal | None
+    principal_paid: Decimal | None
+    principal_outstanding: Decimal | None
+    interest_charged: Decimal | None
+    interest_paid: Decimal | None
+    interest_outstanding: Decimal | None
+    total_expected_repayment: Decimal | None
+    total_repayment: Decimal | None
+    total_outstanding: Decimal | None
+
+
+class LoanTransactionView(BaseModel):
+    external_reference: str | None
+    type: str | None
+    date: date | None
+    amount: Decimal | None
+    principal: Decimal | None
+    interest: Decimal | None
+    fees: Decimal | None
+    penalties: Decimal | None
+    outstanding_after: Decimal | None
+    reversed: bool
+
+
+class LoanOut(BaseModel):
+    loan_reference: str
+    client_uid: str
+    product: str
+    principal: Decimal
+    status: LoanStatus
+    balances: LoanBalances
+    transactions: list[LoanTransactionView]
+
+
+class DisbursementRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    external_reference: Reference
+    disbursed_on: date
+    # Optional: the product is single-disbursement, so the amount is the approved principal. When
+    # sent it must equal the approved principal (a consistency check), otherwise 422.
+    amount: Money | None = None
+
+
+class RepaymentRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    external_reference: Reference
+    amount: Money
+    paid_on: date
+
+
+class TransactionOut(BaseModel):
+    external_reference: str
+    operation: OperationType
+    loan_reference: str
+    amount: Decimal
+    transaction_date: date
+    state: TxState
+    fineract_transaction_id: int | None
+    fineract_breakdown: dict[str, Any] | None
+    erp_entry_id: int | None
+    attempts: int
+    last_error: str | None
+
+
+class InProgressOut(BaseModel):
+    status: str = "IN_PROGRESS"
+    operation: OperationType
+    external_reference: str
+    detail: str
+    transaction: TransactionOut | None = None
+
+
+class RecoveryReport(BaseModel):
+    scanned: int
+    completed: list[str]
+    failed: list[str]
+    deferred: list[str]
+    reconciliation: list[str]
+    released_keys: list[str] = []

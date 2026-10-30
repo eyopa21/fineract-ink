@@ -1,0 +1,66 @@
+# Part D: loan lifecycle through the Integration Service against the compose stack, 2026-10-29T14:16:19Z
+# Fineract 1.15.0 (custom image), Mock ERP, Integration Service, all containers. Dates are in the past so Fineract accepts them.
+
+== Part D demo (demo-d-283337) client_uid=SME-283337
+
+== Part C: create client, find by client_uid, validate
+   POST /api/clients -> 201 {"client_uid":"SME-283337","full_name":"Kigali Tools Ltd 283337","status":"ACTIVE","active":true,"activation_date":"2026-01-10","office":"Kigali Main Office"}
+   same request again -> 201 (replay)
+   GET /api/clients/SME-283337 -> 200 exists=True active=True name_ok=True
+
+== 1. Loan application + approval (5,000,000 RWF, 12 months, 18%)
+   POST /api/loans -> 201 {"loan_reference":"LN-2026-000001","client_uid":"SME-283337","principal":"5000000","status":"APPROVED"}
+   status=Approved active=False closed_obligations_met=False
+   principal_outstanding=None interest_outstanding=None total_outstanding=None total_repayment=None transactions=0
+
+== 2. Disbursement (2026-01-15)
+   -> 200 state=COMPLETED fineract_tx=1 erp_entry=9 breakdown={'amount': '5000000.0', 'principal': '0', 'interest': '0', 'fees': '0', 'penalties': '0', 'overpayment': '0'}
+   status=Active active=True closed_obligations_met=False
+   principal_outstanding=5000000.0 interest_outstanding=500799.0 total_outstanding=5500799.0 total_repayment=0.0 transactions=2
+   ERP entry 9: [('1200', 'DEBIT', '5000000.00'), ('1100', 'CREDIT', '5000000.00')]
+
+== 3. Repayment 1 (458,333 RWF on 2026-02-15)
+   -> 200 state=COMPLETED fineract_tx=3 erp_entry=10 principal=383333.0 interest=75000.0
+   status=Active active=True closed_obligations_met=False
+   principal_outstanding=4616667.0 interest_outstanding=425799.0 total_outstanding=5042466.0 total_repayment=458333.0 transactions=3
+   ERP entry 10: [('1100', 'DEBIT', '458333.00'), ('1200', 'CREDIT', '383333.00'), ('4000', 'CREDIT', '75000.00')]
+
+== 4. Repayment 2 (458,333 RWF on 2026-03-15)
+   -> 200 state=COMPLETED fineract_tx=4 erp_entry=11 principal=389084.0 interest=69249.0
+   status=Active active=True closed_obligations_met=False
+   principal_outstanding=4227583.0 interest_outstanding=356550.0 total_outstanding=4584133.0 total_repayment=916666.0 transactions=4
+   ERP entry 11: [('1100', 'DEBIT', '458333.00'), ('1200', 'CREDIT', '389084.00'), ('4000', 'CREDIT', '69249.00')]
+
+== 5. Repayment 3 (458,333 RWF on 2026-04-15)
+   -> 200 state=COMPLETED fineract_tx=5 erp_entry=12 principal=394921.0 interest=63412.0
+   status=Active active=True closed_obligations_met=False
+   principal_outstanding=3832662.0 interest_outstanding=293138.0 total_outstanding=4125800.0 total_repayment=1374999.0 transactions=5
+   ERP entry 12: [('1100', 'DEBIT', '458333.00'), ('1200', 'CREDIT', '394921.00'), ('4000', 'CREDIT', '63412.00')]
+
+== 6. Final payoff: pay Fineract's total_outstanding (2026-05-15)
+   total_outstanding per Fineract = 4125800
+   -> 200 state=COMPLETED fineract_tx=6 erp_entry=13 principal=3832662.0 interest=293138.0
+   status=Closed (obligations met) active=False closed_obligations_met=True
+   principal_outstanding=0.0 interest_outstanding=0.0 total_outstanding=0.0 total_repayment=5500799.0 transactions=6
+
+== Transactions as recorded by Fineract (via GET /api/loans/LN-2026-000001)
+   LN-2026-000001-DISB          Disbursement  2026-01-15 amount=5000000.0 principal=0         interest=0        outstanding_after=5000000.0
+   None                         Accrual       2026-01-15 amount=500799.0  principal=0         interest=500799.0 outstanding_after=0
+   LN-2026-000001-R1            Repayment     2026-02-15 amount=458333.0  principal=383333.0  interest=75000.0  outstanding_after=4616667.0
+   LN-2026-000001-R2            Repayment     2026-03-15 amount=458333.0  principal=389084.0  interest=69249.0  outstanding_after=4227583.0
+   LN-2026-000001-R3            Repayment     2026-04-15 amount=458333.0  principal=394921.0  interest=63412.0  outstanding_after=3832662.0
+   LN-2026-000001-PAYOFF        Repayment     2026-05-15 amount=4125800.0 principal=3832662.0 interest=293138.0 outstanding_after=0.0
+
+== Integration transaction records
+   LN-2026-000001-DISB          COMPLETED  fineract_tx=1    erp_entry=9
+   LN-2026-000001-R1            COMPLETED  fineract_tx=3    erp_entry=10
+   LN-2026-000001-R2            COMPLETED  fineract_tx=4    erp_entry=11
+   LN-2026-000001-R3            COMPLETED  fineract_tx=5    erp_entry=12
+   LN-2026-000001-PAYOFF        COMPLETED  fineract_tx=6    erp_entry=13
+
+== ERP balances
+   1100 ASSET balance=29499201.00 CREDIT (entries=11)
+   1200 ASSET balance=30000000.00 DEBIT (entries=11)
+   4000 INCOME balance=500799.00 CREDIT (entries=4)
+
+-- done: loan LN-2026-000001
