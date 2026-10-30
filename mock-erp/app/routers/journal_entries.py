@@ -1,6 +1,7 @@
 """Journal entries: balanced, idempotent on external_reference, looked up by reference."""
 
 import json
+from datetime import date
 from decimal import Decimal
 from typing import Annotated
 
@@ -143,6 +144,28 @@ async def post_journal_entry(
     response.status_code = status.HTTP_200_OK
     response.headers["X-Idempotent-Replay"] = "true"
     return to_out(existing)
+
+
+@router.get("", response_model=list[JournalEntryOut])
+def list_journal_entries(
+    session: SessionDep,
+    loan_reference: str | None = None,
+    date_from: date | None = None,
+    date_to: date | None = None,
+    limit: int = 500,
+) -> list[JournalEntryOut]:
+    """Entries filtered by entry_date range and, optionally, by metadata.loan_reference. Used by the
+    Integration Service's reconciliation to find entries the ERP holds that Fineract does not."""
+    query = select(JournalEntry).order_by(JournalEntry.id)
+    if date_from is not None:
+        query = query.where(JournalEntry.entry_date >= date_from)
+    if date_to is not None:
+        query = query.where(JournalEntry.entry_date <= date_to)
+    entries = session.scalars(query.limit(limit)).all()
+    out = [to_out(e) for e in entries]
+    if loan_reference is not None:
+        out = [e for e in out if (e.metadata or {}).get("loan_reference") == loan_reference]
+    return out
 
 
 @router.get("/{external_reference}", response_model=JournalEntryOut)

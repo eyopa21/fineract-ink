@@ -155,5 +155,6 @@ simulate-concurrency: ## I1/I2/I3: sequential duplicates, 12 parallel disburseme
 simulate-failures: ## Part J: five failure scenarios (ERP down, Fineract down, Fineract timeout, ERP timeout, crash) with before/during/after state
 	@mkdir -p evidence/part-j
 	RESTART_CMD="$(COMPOSE) restart integration-service" python3 scripts/simulate_failures.py | tee evidence/part-j/failures.txt
-simulate-reconciliation: ## Part K: seed four outcomes and print the report
-	@echo "TODO: Part K"
+simulate-reconciliation: ## Part K: seed all four outcomes, show the read-only report, then the explicit idempotent repair
+	@mkdir -p evidence/part-k
+	python3 scripts/simulate_reconciliation.py | tee evidence/part-k/reconciliation.txt

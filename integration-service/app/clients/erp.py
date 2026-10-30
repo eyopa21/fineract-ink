@@ -46,6 +46,14 @@ class ErpGateway(Protocol):
         self, external_reference: str, correlation_id: str
     ) -> dict[str, Any] | None: ...
 
+    def list_journal_entries(
+        self,
+        correlation_id: str,
+        loan_reference: str | None = None,
+        date_from: str | None = None,
+        date_to: str | None = None,
+    ) -> list[dict[str, Any]]: ...
+
 
 class ErpClient:
     def __init__(self, settings: Settings | None = None):
@@ -114,6 +122,22 @@ class ErpClient:
         if response.status_code >= 400:
             raise ErpClientError(response.status_code, response.json() if response.content else {})
         result: dict[str, Any] = response.json()
+        return result
+
+    def list_journal_entries(
+        self,
+        correlation_id: str,
+        loan_reference: str | None = None,
+        date_from: str | None = None,
+        date_to: str | None = None,
+    ) -> list[dict[str, Any]]:
+        pairs = (("loan_reference", loan_reference), ("date_from", date_from), ("date_to", date_to))
+        query = "&".join(f"{k}={v}" for k, v in pairs if v)
+        path = "/api/journal-entries" + (f"?{query}" if query else "")
+        response = self._request("GET", path, correlation_id)
+        if response.status_code >= 400:
+            raise ErpClientError(response.status_code, response.json() if response.content else {})
+        result: list[dict[str, Any]] = response.json()
         return result
 
     def close(self) -> None:

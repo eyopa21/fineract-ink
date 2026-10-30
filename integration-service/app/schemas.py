@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.models import SyncStatus
 
@@ -188,6 +188,41 @@ class InProgressOut(BaseModel):
     external_reference: str
     detail: str
     transaction: TransactionOut | None = None
+
+
+class ReconciliationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    loan_references: list[str] = []
+    external_references: list[str] = []
+    date_from: date | None = None
+    date_to: date | None = None
+    # read-only unless explicitly asked; repair re-posts MISSING_IN_ERP items (idempotent)
+    repair: bool = False
+
+    @model_validator(mode="after")
+    def some_scope(self) -> "ReconciliationRequest":
+        if not (self.loan_references or self.external_references or self.date_from or self.date_to):
+            raise ValueError("give loan_references, external_references, or a date range")
+        return self
+
+
+class ReconciliationItem(BaseModel):
+    external_reference: str
+    loan_reference: str | None
+    status: str
+    fineract: dict[str, Any] | None
+    erp: dict[str, Any] | None
+    note: str | None
+    integration_state: str | None
+    repair: dict[str, Any] | None
+
+
+class ReconciliationReport(BaseModel):
+    scope: dict[str, Any]
+    repair: bool
+    summary: dict[str, int]
+    items: list[ReconciliationItem]
 
 
 class RecoveryReport(BaseModel):

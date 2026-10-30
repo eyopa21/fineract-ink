@@ -16,7 +16,7 @@ from app.db import database_is_reachable
 from app.errors import install_error_handlers
 from app.logging import configure_logging
 from app.middleware import RequestContextMiddleware
-from app.routers import accounts, admin, clients, loans, transactions
+from app.routers import accounts, admin, clients, loans, reconciliation, transactions
 
 configure_logging(get_settings().log_level)
 
@@ -59,6 +59,7 @@ app.include_router(accounts.router, dependencies=secured)
 app.include_router(clients.router, dependencies=secured)
 app.include_router(loans.router, dependencies=secured)
 app.include_router(transactions.router, dependencies=secured)
+app.include_router(reconciliation.router, dependencies=secured)
 app.include_router(admin.router, dependencies=secured)
 
 

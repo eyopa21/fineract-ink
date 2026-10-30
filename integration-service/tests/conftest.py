@@ -291,6 +291,48 @@ class FakeErp:
         found = self.entries.get(external_reference)
         return {"entry_id": found["id"], **found["payload"]} if found else None
 
+    def list_journal_entries(
+        self,
+        correlation_id: str,
+        loan_reference: str | None = None,
+        date_from: str | None = None,
+        date_to: str | None = None,
+    ) -> list[dict[str, Any]]:
+        out = []
+        for found in self.entries.values():
+            payload = found["payload"]
+            meta = payload.get("metadata") or {}
+            if loan_reference and meta.get("loan_reference") != loan_reference:
+                continue
+            if date_from and payload["entry_date"] < date_from:
+                continue
+            if date_to and payload["entry_date"] > date_to:
+                continue
+            debits = sum(
+                Decimal(ln["amount"]) for ln in payload["lines"] if ln["direction"] == "DEBIT"
+            )
+            out.append({"entry_id": found["id"], "total_debits": str(debits), **payload})
+        return out
+
+    def seed_entry(
+        self, reference: str, loan_reference: str, amount: str, kind: str = "REPAYMENT"
+    ) -> None:
+        """An entry written straight into the ERP, bypassing the service (seeding mismatches)."""
+        self.entries[reference] = {
+            "id": len(self.entries) + 1,
+            "payload": {
+                "external_reference": reference,
+                "entry_date": "2026-02-15",
+                "description": "seeded",
+                "currency": "RWF",
+                "lines": [
+                    {"account_code": "1100", "direction": "DEBIT", "amount": amount},
+                    {"account_code": "1200", "direction": "CREDIT", "amount": amount},
+                ],
+                "metadata": {"loan_reference": loan_reference, "transaction_type": kind},
+            },
+        }
+
 
 @pytest.fixture(autouse=True)
 def fresh_schema() -> Iterator[None]:
@@ -317,6 +359,11 @@ def fineract() -> FakeFineract:
 @pytest.fixture
 def erp() -> FakeErp:
     return FakeErp()
+
+
+@pytest.fixture
+def erp_fake(erp: FakeErp) -> FakeErp:
+    return erp
 
 
 @pytest.fixture

@@ -147,3 +147,20 @@ def test_timeout_after_write_persists_the_entry_before_stalling(client: TestClie
 
 def test_fault_mode_is_validated(client: TestClient) -> None:
     assert client.put("/admin/faults", json={"mode": "explode"}).status_code == 422
+
+
+@pytest.mark.usefixtures("seeded")
+def test_list_entries_by_loan_reference_and_date(client: TestClient) -> None:
+    assert client.post("/api/journal-entries", json=disbursement("A-DISB")).status_code == 201
+    other = disbursement("B-DISB")
+    other["metadata"]["loan_reference"] = "LN-B"
+    other["entry_date"] = "2026-03-01"
+    assert client.post("/api/journal-entries", json=other).status_code == 201
+
+    by_loan = client.get("/api/journal-entries", params={"loan_reference": "LN-2026-000001"}).json()
+    assert [e["external_reference"] for e in by_loan] == ["A-DISB"]
+    by_date = client.get(
+        "/api/journal-entries", params={"date_from": "2026-02-01", "date_to": "2026-03-31"}
+    ).json()
+    assert [e["external_reference"] for e in by_date] == ["B-DISB"]
+    assert len(client.get("/api/journal-entries").json()) == 2
