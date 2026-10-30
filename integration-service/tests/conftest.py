@@ -174,6 +174,8 @@ class FakeFineract:
         behaviour = self.tx_script.pop(0) if self.tx_script else "ok"
         if behaviour == "down":
             raise FineractUnavailableError("connection refused")
+        if behaviour == "lock_conflict":
+            raise FineractConflictError("optimistic lock", {"httpStatusCode": "409"})
         if ext in self.transactions:
             raise FineractConflictError("transaction externalId exists", {})
         if kind == "Disbursement":

@@ -29,6 +29,10 @@ target-version = "py312"
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "N", "W", "SIM", "RUF"]
 
+[tool.ruff.lint.per-file-ignores]
+# evidence blocks print long, deliberately readable lines
+"tests_live/*" = ["E501"]
+
 [tool.mypy]
 python_version = "3.12"
 strict = true

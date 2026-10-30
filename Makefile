@@ -85,6 +85,10 @@ typecheck: ## mypy --strict for both Python services
 .PHONY: check
 check: lint typecheck test-python ## lint + typecheck + tests
 
+.PHONY: test-python-live
+test-python-live: ## Live tests against the running stack (Part I concurrency); INTEGRATION_URL/FINERACT_URL/ERP_URL override targets
+	uv --directory integration-service run --frozen pytest -q -s tests_live
+
 # ---------------------------------------------------------------- Stack
 
 .PHONY: build
@@ -143,11 +147,13 @@ setup-local: ## Part B against Fineract on localhost (IDE instance) using integr
 simulate-lifecycle: ## Part D: one loan end to end (client -> loan -> disburse -> 3 repayments -> payoff -> Closed), state after every stage
 	@mkdir -p evidence/part-d
 	./scripts/demo-part-d.sh | tee evidence/part-d/lifecycle.txt
-simulate-duplicates: ## I1: same disbursement 4 times
-	@echo "TODO: Part I1"
-simulate-concurrency: ## I2/I3: parallel disbursements and repayments
-	@echo "TODO: Part I2/I3"
-simulate-failures: ## Part J: five failure scenarios
-	@echo "TODO: Part J"
+simulate-duplicates: ## I1 only: same disbursement 4 times
+	uv --directory integration-service run --frozen pytest -q -s tests_live/test_concurrency.py -k i1
+simulate-concurrency: ## I1/I2/I3: sequential duplicates, 12 parallel disbursements (same/different refs), parallel repayments; evidence/part-i
+	@mkdir -p evidence/part-i
+	uv --directory integration-service run --frozen pytest -q -s tests_live/test_concurrency.py 2>&1 | tee evidence/part-i/concurrency.txt
+simulate-failures: ## Part J: five failure scenarios (ERP down, Fineract down, Fineract timeout, ERP timeout, crash) with before/during/after state
+	@mkdir -p evidence/part-j
+	RESTART_CMD="$(COMPOSE) restart integration-service" python3 scripts/simulate_failures.py | tee evidence/part-j/failures.txt
 simulate-reconciliation: ## Part K: seed four outcomes and print the report
 	@echo "TODO: Part K"

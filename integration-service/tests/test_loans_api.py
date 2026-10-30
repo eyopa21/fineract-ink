@@ -354,3 +354,39 @@ def test_loan_submitted_without_approval_is_approved_by_the_approve_endpoint(
     other = client.post(f"/api/loans/{loan}/approve", json={**body, "external_reference": "APR-2"})
     assert other.status_code == 409 and "not pending approval" in other.json()["error"]["message"]
     assert disburse(client, loan).status_code == 200  # type: ignore[attr-defined]
+
+
+def test_fineract_lock_conflict_is_a_retryable_503_not_a_payload_conflict(
+    client: TestClient, fineract: FakeFineract
+) -> None:
+    make_client(client)
+    loan = make_loan(client)
+    assert disburse(client, loan).status_code == 200  # type: ignore[attr-defined]
+    fineract.tx_script = ["lock_conflict"]
+    r = repay(client, loan, "REP-LOCK", "100000")
+    assert r.status_code == 503, r.text  # type: ignore[attr-defined]
+    assert "safe to retry" in r.json()["error"]["message"]  # type: ignore[attr-defined]
+    assert client.get("/api/transactions/REP-LOCK").json()["state"] == "FAILED"
+    assert len(fineract.transactions) == 1, "nothing recorded by the loser"
+    again = repay(client, loan, "REP-LOCK", "100000")
+    assert again.status_code == 200 and again.json()["state"] == "COMPLETED"  # type: ignore[attr-defined]
+    assert len(fineract.transactions) == 2
+
+
+def test_fineract_409_for_an_existing_reference_is_adopted_not_duplicated(
+    client: TestClient, fineract: FakeFineract
+) -> None:
+    make_client(client)
+    loan = make_loan(client)
+    assert disburse(client, loan).status_code == 200  # type: ignore[attr-defined]
+    # simulate a lost response: Fineract already holds REP-X, our side has no row for it
+    fineract.loan_transaction_by_external_id(
+        loan,
+        "repayment",
+        {"externalId": "REP-X", "transactionAmount": 100000, "transactionDate": "15 February 2026"},
+        "pre",
+    )
+    r = repay(client, loan, "REP-X", "100000")
+    assert r.status_code == 200, r.text  # type: ignore[attr-defined]
+    assert r.json()["state"] == "COMPLETED"  # type: ignore[attr-defined]
+    assert len([t for t in fineract.transactions if t == "REP-X"]) == 1

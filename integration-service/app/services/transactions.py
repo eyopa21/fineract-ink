@@ -326,8 +326,22 @@ def execute(
             fineract_transaction_id=found.get("id"),
         )
     except FineractConflictError as exc:
-        transition(session, tx, TxState.FAILED, f"fineract conflict: {exc}")
-        raise ConflictError(f"fineract: {exc}") from exc
+        # Fineract answers 409 for two different things: our external id already exists (a lost
+        # response from an earlier attempt) or an optimistic-lock loss on a busy loan (nothing
+        # recorded). Look up by external id to tell them apart.
+        found = fineract.get_loan_transaction_by_external_ids(loan_reference, reference, cid)
+        if found is None:
+            transition(
+                session, tx, TxState.FAILED, f"fineract lock conflict, nothing recorded: {exc}"
+            )
+            raise UpstreamUnavailableError(
+                "fineract", "loan is busy (optimistic lock), nothing was recorded; safe to retry"
+            ) from exc
+        log.info(
+            "fineract transaction already present, adopted",
+            external_reference=reference,
+            fineract_transaction_id=found.get("id"),
+        )
     except FineractClientError as exc:
         transition(session, tx, TxState.FAILED, f"fineract rejected: {exc}")
         message = exc.body.get("defaultUserMessage") if isinstance(exc.body, dict) else str(exc)
