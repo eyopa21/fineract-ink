@@ -73,6 +73,14 @@ POST /fineract-provider/api/v1/glaccounts
 
 `GET /glaccounts` and `GET /glaccounts/{id}` now return `externalId`.
 
+## Keeping the submodule pointer on the tag
+
+The parent repository pins `upstream/` to the 1.15.0 commit `d5636847`. Working on a branch inside the
+submodule (for example to push the fork branch) moves its HEAD, which makes git show the submodule as
+modified. Never stage `fineract-customization/upstream` in the parent: a pointer to a commit that only
+exists on a fork breaks `git clone --recurse-submodules` for anyone else. The patch file carries the change;
+`make patch-export` diffs against the tag, so committed and uncommitted edits in the submodule both land in it.
+
 ## Build, test, demo
 
 All commands run from the repository root.

@@ -1,0 +1,149 @@
+# ./gradlew :fineract-accounting:test --tests '*GLAccountExternalId*' 2026-10-27T15:47:55Z
+> Task :buildSrc:extractPluginRequests UP-TO-DATE
+> Task :buildSrc:generatePluginAdapters UP-TO-DATE
+> Task :buildSrc:compileJava UP-TO-DATE
+> Task :buildSrc:compileGroovy UP-TO-DATE
+> Task :buildSrc:compileGroovyPlugins UP-TO-DATE
+> Task :buildSrc:pluginDescriptors UP-TO-DATE
+> Task :buildSrc:processResources UP-TO-DATE
+> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:jar UP-TO-DATE
+> Task :spotlessInternalRegisterDependencies UP-TO-DATE
+> Task :fineract-avro-schemas:preprocessAvroSchemas UP-TO-DATE
+> Task :fineract-avro-schemas:spotlessJson UP-TO-DATE
+> Task :fineract-avro-schemas:spotlessJsonApply UP-TO-DATE
+> Task :fineract-avro-schemas:buildJavaSdk UP-TO-DATE
+> Task :fineract-avro-schemas:compileJava UP-TO-DATE
+> Task :fineract-validation:compileJava UP-TO-DATE
+> Task :fineract-command:compileJava UP-TO-DATE
+> Task :fineract-avro-schemas:processResources UP-TO-DATE
+> Task :fineract-avro-schemas:classes UP-TO-DATE
+> Task :fineract-validation:processResources UP-TO-DATE
+> Task :fineract-validation:classes UP-TO-DATE
+> Task :fineract-validation:jar UP-TO-DATE
+> Task :fineract-command:processResources UP-TO-DATE
+> Task :fineract-avro-schemas:jar UP-TO-DATE
+> Task :fineract-command:classes UP-TO-DATE
+> Task :fineract-command-audit:processResources UP-TO-DATE
+> Task :fineract-command-jdbc:processResources UP-TO-DATE
+> Task :fineract-document:processResources NO-SOURCE
+> Task :fineract-command:jar UP-TO-DATE
+> Task :fineract-command-audit:compileJava UP-TO-DATE
+> Task :fineract-command-audit:classes UP-TO-DATE
+> Task :fineract-command-audit:jar UP-TO-DATE
+> Task :fineract-command-jdbc:compileJava UP-TO-DATE
+> Task :fineract-command-jdbc:classes UP-TO-DATE
+> Task :fineract-command-jdbc:jar UP-TO-DATE
+> Task :fineract-tax:generateStaticWeavingPersistenceXml
+> Task :fineract-tax:processResources NO-SOURCE
+> Task :fineract-cob:generateStaticWeavingPersistenceXml
+> Task :fineract-cob:processResources NO-SOURCE
+> Task :fineract-branch:generateStaticWeavingPersistenceXml
+> Task :fineract-branch:processResources UP-TO-DATE
+> Task :fineract-core:generateStaticWeavingPersistenceXml
+> Task :fineract-core:compileJava UP-TO-DATE
+> Task :fineract-core:processResources NO-SOURCE
+> Task :fineract-core:classes UP-TO-DATE
+> Task :fineract-core:jar UP-TO-DATE
+> Task :fineract-tax:compileJava UP-TO-DATE
+> Task :fineract-tax:classes UP-TO-DATE
+> Task :fineract-tax:jar UP-TO-DATE
+> Task :fineract-cob:compileJava UP-TO-DATE
+> Task :fineract-cob:classes UP-TO-DATE
+> Task :fineract-cob:jar UP-TO-DATE
+> Task :fineract-charge:generateStaticWeavingPersistenceXml
+> Task :fineract-document:compileJava UP-TO-DATE
+> Task :fineract-document:classes UP-TO-DATE
+> Task :fineract-document:jar UP-TO-DATE
+> Task :fineract-rates:generateStaticWeavingPersistenceXml
+> Task :fineract-rates:compileJava UP-TO-DATE
+> Task :fineract-rates:processResources UP-TO-DATE
+> Task :fineract-rates:classes UP-TO-DATE
+> Task :fineract-charge:compileJava UP-TO-DATE
+> Task :fineract-rates:jar UP-TO-DATE
+> Task :fineract-charge:processResources UP-TO-DATE
+> Task :fineract-charge:classes UP-TO-DATE
+> Task :fineract-charge:jar UP-TO-DATE
+> Task :fineract-mix:compileJava UP-TO-DATE
+> Task :fineract-mix:processResources NO-SOURCE
+> Task :fineract-mix:classes UP-TO-DATE
+> Task :fineract-mix:jar UP-TO-DATE
+> Task :fineract-report:compileJava UP-TO-DATE
+> Task :fineract-report:processResources NO-SOURCE
+> Task :fineract-report:classes UP-TO-DATE
+> Task :fineract-accounting:generateStaticWeavingPersistenceXml
+> Task :fineract-report:jar UP-TO-DATE
+> Task :fineract-accounting:compileJava UP-TO-DATE
+> Task :fineract-accounting:processResources UP-TO-DATE
+> Task :fineract-accounting:classes UP-TO-DATE
+> Task :fineract-accounting:jar UP-TO-DATE
+> Task :fineract-savings:generateStaticWeavingPersistenceXml
+> Task :fineract-branch:compileJava UP-TO-DATE
+> Task :fineract-branch:classes UP-TO-DATE
+> Task :fineract-branch:jar UP-TO-DATE
+> Task :fineract-savings:compileJava UP-TO-DATE
+> Task :fineract-savings:processResources UP-TO-DATE
+> Task :fineract-savings:classes UP-TO-DATE
+> Task :fineract-savings:jar UP-TO-DATE
+> Task :fineract-investor:generateStaticWeavingPersistenceXml
+> Task :fineract-investor:processResources UP-TO-DATE
+> Task :fineract-working-capital-loan:generateStaticWeavingPersistenceXml
+> Task :fineract-working-capital-loan:processResources UP-TO-DATE
+> Task :integration-tests:compileJava NO-SOURCE
+> Task :integration-tests:processResources NO-SOURCE
+> Task :integration-tests:classes UP-TO-DATE
+> Task :fineract-security:generateStaticWeavingPersistenceXml
+> Task :fineract-security:compileJava UP-TO-DATE
+> Task :fineract-security:processResources NO-SOURCE
+> Task :fineract-security:classes UP-TO-DATE
+> Task :fineract-security:jar UP-TO-DATE
+> Task :fineract-loan:generateStaticWeavingPersistenceXml
+> Task :fineract-loan:compileJava UP-TO-DATE
+> Task :fineract-loan:processResources UP-TO-DATE
+> Task :fineract-loan:classes UP-TO-DATE
+> Task :fineract-loan:jar UP-TO-DATE
+> Task :fineract-loan-origination:generateStaticWeavingPersistenceXml
+> Task :fineract-loan-origination:processResources UP-TO-DATE
+> Task :fineract-investor:compileJava UP-TO-DATE
+> Task :fineract-investor:classes UP-TO-DATE
+> Task :fineract-working-capital-loan:compileJava UP-TO-DATE
+> Task :fineract-working-capital-loan:classes UP-TO-DATE
+> Task :fineract-working-capital-loan:jar UP-TO-DATE
+> Task :fineract-investor:jar UP-TO-DATE
+> Task :fineract-loan-origination:compileJava UP-TO-DATE
+> Task :fineract-loan-origination:classes UP-TO-DATE
+> Task :fineract-loan-origination:jar UP-TO-DATE
+> Task :fineract-progressive-loan:generateStaticWeavingPersistenceXml
+> Task :fineract-progressive-loan:compileJava UP-TO-DATE
+> Task :fineract-progressive-loan:processResources UP-TO-DATE
+> Task :fineract-progressive-loan:classes UP-TO-DATE
+> Task :fineract-progressive-loan:jar UP-TO-DATE
+> Task :fineract-provider:generateStaticWeavingPersistenceXml
+> Task :fineract-provider:compileJava UP-TO-DATE
+> Task :fineract-provider:generateGitProperties
+> Task :fineract-provider:generateRebelMain UP-TO-DATE
+> Task :fineract-provider:processResources
+> Task :fineract-provider:classes
+> Task :fineract-provider:prepareInputYaml UP-TO-DATE
+> Task :fineract-accounting:compileTestJava
+> Task :fineract-accounting:processTestResources NO-SOURCE
+> Task :fineract-accounting:testClasses
+> Task :fineract-accounting:test
+> Task :fineract-provider:resolve
+> Task :fineract-accounting:test
+org.apache.fineract.accounting.glaccount.exception.GLAccountExternalIdConflictExceptionMapperTest
+  Test conflictIsMappedToHttp409WithFineractErrorBody() PASSED
+org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdCreateTest
+  Test uniqueIndexViolationOnExternalIdIsMappedToConflict() PASSED (17.8s)
+  Test accountWithoutExternalReferenceIsCreatedWithEmptyReferenceAndNoLookup() PASSED
+  Test sameReferenceWithIdenticalPayloadReturnsExistingAccountWithoutSaving() PASSED
+  Test uniqueIndexViolationOnGlCodeIsStillReportedAsDuplicateCodeOnPostgresConstraintName() PASSED
+  Test newExternalReferenceCreatesTheAccountAndPersistsTheReference() PASSED
+  Test sameReferenceWithDifferentPayloadIsRejectedWithConflictBeforeAnyWrite() PASSED
+org.apache.fineract.accounting.glaccount.service.GLAccountExternalIdPolicyTest
+  Test identicalPayloadMatches() PASSED
+  Test whitespaceAndOmittedDefaultsDoNotCountAsDifferences() PASSED
+  Test anyBusinessAttributeDifferenceIsAConflict() PASSED
+org.apache.fineract.accounting.glaccount.service.GLAccountWritePlatformServiceJpaRepositoryImplTest
+  Test testDeleteGLAccountSuccessWithNoDependencies() PASSED
+BUILD FAILED in 10m 5s

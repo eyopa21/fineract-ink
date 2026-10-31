@@ -22,3 +22,6 @@ logs/
 .env
 .env.local
 docker-compose.override.yml
+
+# evidence is committed in full, including build logs
+!evidence/**

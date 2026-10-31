@@ -1,0 +1,132 @@
+# make build-fineract (Jib, patched tree) 2026-10-27T15:47:55Z
+> Task :buildSrc:extractPluginRequests UP-TO-DATE
+> Task :buildSrc:generatePluginAdapters UP-TO-DATE
+> Task :buildSrc:compileJava UP-TO-DATE
+> Task :buildSrc:compileGroovy UP-TO-DATE
+> Task :buildSrc:compileGroovyPlugins UP-TO-DATE
+> Task :buildSrc:pluginDescriptors UP-TO-DATE
+> Task :buildSrc:processResources UP-TO-DATE
+> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:jar UP-TO-DATE
+> Task :spotlessInternalRegisterDependencies UP-TO-DATE
+> Task :fineract-avro-schemas:preprocessAvroSchemas UP-TO-DATE
+> Task :fineract-command:compileJava UP-TO-DATE
+> Task :fineract-validation:compileJava UP-TO-DATE
+> Task :fineract-validation:processResources UP-TO-DATE
+> Task :fineract-validation:classes UP-TO-DATE
+> Task :fineract-command:processResources UP-TO-DATE
+> Task :fineract-command:classes UP-TO-DATE
+> Task :fineract-command:jar UP-TO-DATE
+> Task :fineract-avro-schemas:spotlessJson UP-TO-DATE
+> Task :fineract-avro-schemas:spotlessJsonApply UP-TO-DATE
+> Task :fineract-validation:jar UP-TO-DATE
+> Task :fineract-avro-schemas:buildJavaSdk UP-TO-DATE
+> Task :fineract-command-audit:compileJava UP-TO-DATE
+> Task :fineract-command-audit:processResources UP-TO-DATE
+> Task :fineract-command-audit:classes UP-TO-DATE
+> Task :fineract-avro-schemas:compileJava UP-TO-DATE
+> Task :fineract-command-audit:jar UP-TO-DATE
+> Task :fineract-avro-schemas:processResources UP-TO-DATE
+> Task :fineract-avro-schemas:classes UP-TO-DATE
+> Task :fineract-command-jdbc:compileJava UP-TO-DATE
+> Task :fineract-avro-schemas:jar UP-TO-DATE
+> Task :fineract-command-jdbc:processResources UP-TO-DATE
+> Task :fineract-command-jdbc:classes UP-TO-DATE
+> Task :fineract-document:processResources NO-SOURCE
+> Task :fineract-command-jdbc:jar UP-TO-DATE
+> Task :fineract-charge:generateStaticWeavingPersistenceXml
+> Task :fineract-tax:generateStaticWeavingPersistenceXml
+> Task :fineract-branch:generateStaticWeavingPersistenceXml
+> Task :fineract-accounting:generateStaticWeavingPersistenceXml
+> Task :fineract-cob:generateStaticWeavingPersistenceXml
+> Task :fineract-tax:processResources NO-SOURCE
+> Task :fineract-cob:processResources NO-SOURCE
+> Task :fineract-branch:processResources UP-TO-DATE
+> Task :fineract-accounting:processResources UP-TO-DATE
+> Task :fineract-charge:processResources UP-TO-DATE
+> Task :fineract-mix:processResources NO-SOURCE
+> Task :fineract-core:generateStaticWeavingPersistenceXml
+> Task :fineract-rates:generateStaticWeavingPersistenceXml
+> Task :fineract-rates:processResources UP-TO-DATE
+> Task :fineract-report:processResources NO-SOURCE
+> Task :fineract-core:compileJava UP-TO-DATE
+> Task :fineract-core:processResources NO-SOURCE
+> Task :fineract-core:classes UP-TO-DATE
+> Task :fineract-loan:generateStaticWeavingPersistenceXml
+> Task :fineract-core:jar UP-TO-DATE
+> Task :fineract-loan:processResources UP-TO-DATE
+> Task :fineract-tax:compileJava UP-TO-DATE
+> Task :fineract-tax:classes UP-TO-DATE
+> Task :fineract-tax:jar UP-TO-DATE
+> Task :fineract-investor:generateStaticWeavingPersistenceXml
+> Task :fineract-cob:compileJava UP-TO-DATE
+> Task :fineract-cob:classes UP-TO-DATE
+> Task :fineract-cob:jar UP-TO-DATE
+> Task :fineract-rates:compileJava UP-TO-DATE
+> Task :fineract-rates:classes UP-TO-DATE
+> Task :fineract-rates:jar UP-TO-DATE
+> Task :fineract-charge:compileJava UP-TO-DATE
+> Task :fineract-charge:classes UP-TO-DATE
+> Task :fineract-charge:jar UP-TO-DATE
+> Task :fineract-investor:processResources UP-TO-DATE
+> Task :fineract-mix:compileJava UP-TO-DATE
+> Task :fineract-mix:classes UP-TO-DATE
+> Task :fineract-mix:jar UP-TO-DATE
+> Task :fineract-document:compileJava UP-TO-DATE
+> Task :fineract-document:classes UP-TO-DATE
+> Task :fineract-accounting:compileJava UP-TO-DATE
+> Task :fineract-accounting:classes UP-TO-DATE
+> Task :fineract-document:jar UP-TO-DATE
+> Task :fineract-accounting:jar UP-TO-DATE
+> Task :fineract-report:compileJava UP-TO-DATE
+> Task :fineract-report:classes UP-TO-DATE
+> Task :fineract-report:jar UP-TO-DATE
+> Task :fineract-branch:compileJava UP-TO-DATE
+> Task :fineract-branch:classes UP-TO-DATE
+> Task :fineract-loan-origination:generateStaticWeavingPersistenceXml
+> Task :fineract-branch:jar UP-TO-DATE
+> Task :fineract-loan-origination:processResources UP-TO-DATE
+> Task :fineract-loan:compileJava UP-TO-DATE
+> Task :fineract-loan:classes UP-TO-DATE
+> Task :fineract-loan:jar UP-TO-DATE
+> Task :fineract-investor:compileJava UP-TO-DATE
+> Task :fineract-investor:classes UP-TO-DATE
+> Task :fineract-investor:jar UP-TO-DATE
+> Task :fineract-savings:generateStaticWeavingPersistenceXml
+> Task :fineract-working-capital-loan:generateStaticWeavingPersistenceXml
+> Task :fineract-savings:compileJava UP-TO-DATE
+> Task :fineract-savings:processResources UP-TO-DATE
+> Task :fineract-progressive-loan:generateStaticWeavingPersistenceXml
+> Task :fineract-savings:classes UP-TO-DATE
+> Task :fineract-savings:jar UP-TO-DATE
+> Task :fineract-progressive-loan:compileJava UP-TO-DATE
+> Task :fineract-progressive-loan:processResources UP-TO-DATE
+> Task :fineract-progressive-loan:classes UP-TO-DATE
+> Task :fineract-working-capital-loan:compileJava UP-TO-DATE
+> Task :fineract-security:generateStaticWeavingPersistenceXml
+> Task :fineract-progressive-loan:jar UP-TO-DATE
+> Task :fineract-working-capital-loan:processResources UP-TO-DATE
+> Task :fineract-working-capital-loan:classes UP-TO-DATE
+> Task :fineract-working-capital-loan:jar UP-TO-DATE
+> Task :fineract-security:compileJava UP-TO-DATE
+> Task :fineract-security:processResources NO-SOURCE
+> Task :fineract-security:classes UP-TO-DATE
+> Task :fineract-security:jar UP-TO-DATE
+> Task :fineract-loan-origination:compileJava UP-TO-DATE
+> Task :fineract-loan-origination:classes UP-TO-DATE
+> Task :fineract-loan-origination:jar UP-TO-DATE
+> Task :fineract-provider:generateStaticWeavingPersistenceXml
+> Task :fineract-provider:compileJava UP-TO-DATE
+> Task :fineract-provider:generateGitProperties
+> Task :fineract-provider:generateRebelMain UP-TO-DATE
+> Task :fineract-provider:processResources UP-TO-DATE
+> Task :fineract-provider:classes
+> Task :fineract-provider:prepareInputYaml UP-TO-DATE
+> Task :fineract-provider:resolve UP-TO-DATE
+> Task :fineract-provider:resolveMainClassName
+> Task :fineract-provider:bootJar
+> Task :fineract-provider:jibDockerBuild
+Containerizing application to Docker daemon as [36mfineract-custom[0m, [36mfineract-custom:1.15.0[0m...
+[1ABuilt image to Docker daemon as [36mfineract-custom[0m, [36mfineract-custom:1.15.0[0m
+BUILD SUCCESSFUL in 1m 33s
+exit=0
