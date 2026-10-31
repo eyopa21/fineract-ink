@@ -143,7 +143,7 @@ setup-local: ## Part B against Fineract on localhost (IDE instance) using integr
 
 # ---------------------------------------------------------------- Simulations (filled in Tier 2)
 
-.PHONY: simulate-lifecycle simulate-duplicates simulate-concurrency simulate-failures simulate-reconciliation
+.PHONY: simulate-lifecycle simulate-duplicates simulate-concurrency simulate-failures simulate-reconciliation simulate-gl-reconciliation
 simulate-lifecycle: ## Part D: one loan end to end (client -> loan -> disburse -> 3 repayments -> payoff -> Closed), state after every stage
 	@mkdir -p evidence/part-d
 	./scripts/demo-part-d.sh | tee evidence/part-d/lifecycle.txt
@@ -158,3 +158,7 @@ simulate-failures: ## Part J: five failure scenarios (ERP down, Fineract down, F
 simulate-reconciliation: ## Part K: seed all four outcomes, show the read-only report, then the explicit idempotent repair
 	@mkdir -p evidence/part-k
 	python3 scripts/simulate_reconciliation.py | tee evidence/part-k/reconciliation.txt
+
+simulate-gl-reconciliation: ## Stretch: Fineract GL accounts vs the ERP chart of accounts, keyed by external reference (read-only)
+	@mkdir -p evidence/part-l
+	./scripts/simulate_gl_reconciliation.sh | tee evidence/part-l/gl-reconciliation.txt

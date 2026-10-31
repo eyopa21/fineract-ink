@@ -85,6 +85,8 @@ class FineractLoanGateway(FineractGateway, Protocol):
 
     def find_loan_product_id(self, name: str, correlation_id: str) -> int | None: ...
 
+    def list_gl_accounts(self, correlation_id: str) -> list[dict[str, Any]]: ...
+
 
 class FineractAdminGateway(FineractGateway, Protocol):
     """Generic verbs used by the Part B setup command."""
@@ -242,6 +244,12 @@ class FineractClient:
             if product.get("name") == name:
                 return int(product["id"])
         return None
+
+    def list_gl_accounts(self, correlation_id: str) -> list[dict[str, Any]]:
+        result: list[dict[str, Any]] = self._checked(
+            self._request("GET", "/glaccounts", correlation_id)
+        )
+        return result
 
     # generic verbs for configuration (Part B setup) and lookups; faults and timeouts apply
     def get(self, path: str, correlation_id: str) -> tuple[int, Any]:

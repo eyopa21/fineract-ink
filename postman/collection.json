@@ -1,0 +1,874 @@
+{
+  "info": {
+    "name": "Fineract Assessment",
+    "description": "Integration Service and Mock ERP. Set the collection variables; run top to bottom.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "integration_url",
+      "value": "http://localhost:8100"
+    },
+    {
+      "key": "erp_url",
+      "value": "http://localhost:8101"
+    },
+    {
+      "key": "api_key",
+      "value": "partner-demo-key"
+    },
+    {
+      "key": "erp_api_key",
+      "value": "erp-demo-key"
+    },
+    {
+      "key": "client_uid",
+      "value": "SME-000001"
+    },
+    {
+      "key": "loan_reference",
+      "value": "LN-2026-000001"
+    }
+  ],
+  "item": [
+    {
+      "name": "GL sync (Part A)",
+      "item": [
+        {
+          "name": "Sync ERP chart of accounts into Fineract",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/accounts/sync",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "accounts",
+                "sync"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Mapping table",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/accounts/sync",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "accounts",
+                "sync"
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clients (Part C)",
+      "item": [
+        {
+          "name": "Create client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/clients",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "clients"
+              ]
+            },
+            "description": "Idempotent on external_reference; client_uid unique",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"external_reference\": \"CLI-{{client_uid}}\",\n  \"client_uid\": \"{{client_uid}}\",\n  \"full_name\": \"Kigali Tools Ltd\",\n  \"activation_date\": \"2026-01-10\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get client by client_uid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/clients/{{client_uid}}",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "{{client_uid}}"
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "Loans (Parts D, E, F)",
+      "item": [
+        {
+          "name": "Apply + approve",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/loans",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "loans"
+              ]
+            },
+            "description": "Issues loan_reference LN-YYYY-NNNNNN; copy it into the loan_reference variable",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"external_reference\": \"APP-{{client_uid}}-1\",\n  \"client_uid\": \"{{client_uid}}\",\n  \"principal\": \"5000000\",\n  \"submitted_on\": \"2026-01-12\",\n  \"expected_disbursement_date\": \"2026-01-15\",\n  \"approve\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Approve (when applied with approve=false)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/loans/{{loan_reference}}/approve",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "loans",
+                "{{loan_reference}}",
+                "approve"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"external_reference\": \"APR-{{loan_reference}}\",\n  \"approved_on\": \"2026-01-13\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get loan (Fineract status, balances, transactions)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/loans/{{loan_reference}}",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "loans",
+                "{{loan_reference}}"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Disburse (amount optional = approved principal)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/loans/{{loan_reference}}/disburse",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "loans",
+                "{{loan_reference}}",
+                "disburse"
+              ]
+            },
+            "description": "One per loan; replay returns the same result",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"external_reference\": \"{{loan_reference}}-DISB\",\n  \"disbursed_on\": \"2026-01-15\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Repayment 1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/loans/{{loan_reference}}/repayments",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "loans",
+                "{{loan_reference}}",
+                "repayments"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"external_reference\": \"{{loan_reference}}-R1\",\n  \"amount\": \"458333\",\n  \"paid_on\": \"2026-02-15\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Repayment 2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/loans/{{loan_reference}}/repayments",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "loans",
+                "{{loan_reference}}",
+                "repayments"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"external_reference\": \"{{loan_reference}}-R2\",\n  \"amount\": \"458333\",\n  \"paid_on\": \"2026-03-15\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Transaction by external reference",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/transactions/{{loan_reference}}-R1",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "transactions",
+                "{{loan_reference}}-R1"
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reconciliation (Part K)",
+      "item": [
+        {
+          "name": "Report (read-only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/reconciliation",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "reconciliation"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loan_references\": [\n    \"{{loan_reference}}\"\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Repair (explicit, idempotent)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/reconciliation",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "reconciliation"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"loan_references\": [\n    \"{{loan_reference}}\"\n  ],\n  \"repair\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "GL master-data report (stretch)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/api/reconciliation/gl-accounts",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "api",
+                "reconciliation",
+                "gl-accounts"
+              ]
+            },
+            "description": "Fineract GL accounts vs ERP chart, read-only"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Operations (Part J)",
+      "item": [
+        {
+          "name": "Recovery sweep",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/admin/recover",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "admin",
+                "recover"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Read fault mode",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/admin/faults",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "admin",
+                "faults"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Set fault mode",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{integration_url}}/admin/faults",
+              "host": [
+                "{{integration_url}}"
+              ],
+              "path": [
+                "admin",
+                "faults"
+              ]
+            },
+            "description": "none | fineract_down | fineract_timeout_after_send | erp_down | crash_after_fineract",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mode\": \"none\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mock ERP (Part G)",
+      "item": [
+        {
+          "name": "Chart of accounts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{erp_api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{erp_url}}/api/accounts",
+              "host": [
+                "{{erp_url}}"
+              ],
+              "path": [
+                "api",
+                "accounts"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Create account (idempotent)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{erp_api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{erp_url}}/api/accounts",
+              "host": [
+                "{{erp_url}}"
+              ],
+              "path": [
+                "api",
+                "accounts"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"1500\",\n  \"name\": \"Equipment\",\n  \"type\": \"ASSET\",\n  \"currency\": \"RWF\",\n  \"external_reference\": \"GL-1500\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Account balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{erp_api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{erp_url}}/api/accounts/1200/balance",
+              "host": [
+                "{{erp_url}}"
+              ],
+              "path": [
+                "api",
+                "accounts",
+                "1200",
+                "balance"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Post journal entry (must balance)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{erp_api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{erp_url}}/api/journal-entries",
+              "host": [
+                "{{erp_url}}"
+              ],
+              "path": [
+                "api",
+                "journal-entries"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"external_reference\": \"MANUAL-0001\",\n  \"entry_date\": \"2026-02-15\",\n  \"description\": \"Manual example\",\n  \"currency\": \"RWF\",\n  \"lines\": [\n    {\n      \"account_code\": \"1100\",\n      \"direction\": \"DEBIT\",\n      \"amount\": \"1000\"\n    },\n    {\n      \"account_code\": \"4000\",\n      \"direction\": \"CREDIT\",\n      \"amount\": \"1000\"\n    }\n  ],\n  \"metadata\": {\n    \"loan_reference\": \"{{loan_reference}}\",\n    \"transaction_type\": \"REPAYMENT\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Journal entry by reference",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{erp_api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{erp_url}}/api/journal-entries/MANUAL-0001",
+              "host": [
+                "{{erp_url}}"
+              ],
+              "path": [
+                "api",
+                "journal-entries",
+                "MANUAL-0001"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Journal entries for a loan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{erp_api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{erp_url}}/api/journal-entries?loan_reference={{loan_reference}}",
+              "host": [
+                "{{erp_url}}"
+              ],
+              "path": [
+                "api",
+                "journal-entries?loan_reference={{loan_reference}}"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Set ERP fault mode",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{erp_api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "postman-{{$guid}}"
+              }
+            ],
+            "url": {
+              "raw": "{{erp_url}}/admin/faults",
+              "host": [
+                "{{erp_url}}"
+              ],
+              "path": [
+                "admin",
+                "faults"
+              ]
+            },
+            "description": "none | down | timeout | timeout_after_write",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mode\": \"none\",\n  \"delay_seconds\": 30\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

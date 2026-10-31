@@ -259,6 +259,22 @@ class FakeFineract:
     def find_loan_product_id(self, name: str, correlation_id: str) -> int | None:
         return 1
 
+    extra_gl: list[dict[str, Any]] = field(default_factory=list)
+
+    def list_gl_accounts(self, correlation_id: str) -> list[dict[str, Any]]:
+        synced = [
+            {
+                "id": fid,
+                "glCode": p["glCode"],
+                "name": p["name"],
+                "type": {"id": p["type"]},
+                "externalId": ext,
+                "disabled": False,
+            }
+            for ext, (fid, p) in self.accounts.items()
+        ]
+        return synced + list(self.extra_gl)
+
 
 @dataclass
 class FakeErp:

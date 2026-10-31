@@ -225,6 +225,20 @@ class ReconciliationReport(BaseModel):
     items: list[ReconciliationItem]
 
 
+class GlReconciliationItem(BaseModel):
+    key: str
+    status: str
+    erp: dict[str, Any] | None
+    fineract: dict[str, Any] | None
+    mapping_state: str | None
+    note: str | None
+
+
+class GlReconciliationReport(BaseModel):
+    summary: dict[str, int]
+    items: list[GlReconciliationItem]
+
+
 class RecoveryReport(BaseModel):
     scanned: int
     completed: list[str]

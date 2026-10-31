@@ -4,6 +4,9 @@ A change inside Apache Fineract 1.15.0 so that GL accounts owned by an external 
 can be synchronized idempotently. Delivered as [`gl-external-reference.patch`](gl-external-reference.patch),
 a diff against the upstream tag `1.15.0` (commit `d5636847`), applied to the submodule in `upstream/`.
 
+To read the diff in the GitHub UI, the same change is on a fork branch:
+[`1.15.0...feat/add-externalId-to-gl-accounts-module`](https://github.com/eyopa21/fineract/compare/1.15.0...eyopa21:fineract:feat/add-externalId-to-gl-accounts-module?expand=1).
+
 ## Behaviours enforced inside Fineract
 
 | # | Requirement | Where it is enforced |

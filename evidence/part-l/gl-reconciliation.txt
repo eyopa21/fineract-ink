@@ -1,0 +1,24 @@
+# Stretch: GL master-data reconciliation, 2026-10-30T13:16:53Z. Integration Service current code on 8102 (ERP container 8101), Fineract 1.15.0 (IDE instance).
+== GL master-data reconciliation: POST http://localhost:8102/api/reconciliation/gl-accounts (read-only)
+   summary: {'MATCHED': 13, 'MISSING_IN_ERP': 7, 'MISSING_IN_FINERACT': 0, 'ATTRIBUTE_MISMATCH': 0}
+   GL-1100          MATCHED              erp=('1100', 'Bank')                   fineract=('1100', 'Bank', 'ASSET')                mapping=SYNCED 
+   GL-1200          MATCHED              erp=('1200', 'Loan Receivable')        fineract=('1200', 'Loan Receivable', 'ASSET')     mapping=SYNCED 
+   GL-1300          MATCHED              erp=('1300', 'Transfers in Suspense')  fineract=('1300', 'Transfers in Suspense', 'ASSET') mapping=SYNCED 
+   GL-2100          MATCHED              erp=('2100', 'Overpayment Liability')  fineract=('2100', 'Overpayment Liability', 'LIABILITY') mapping=SYNCED 
+   GL-4000          MATCHED              erp=('4000', 'Interest Income')        fineract=('4000', 'Interest Income', 'INCOME')    mapping=SYNCED 
+   GL-4100          MATCHED              erp=('4100', 'Fee Income')             fineract=('4100', 'Fee Income', 'INCOME')         mapping=SYNCED 
+   GL-4200          MATCHED              erp=('4200', 'Penalty Income')         fineract=('4200', 'Penalty Income', 'INCOME')     mapping=SYNCED 
+   GL-4300          MATCHED              erp=('4300', 'Recoveries on Written-off Loans') fineract=('4300', 'Recoveries on Written-off Loans', 'INCOME') mapping=SYNCED 
+   GL-5100          MATCHED              erp=('5100', 'Loan Write-off Expense') fineract=('5100', 'Loan Write-off Expense', 'EXPENSE') mapping=SYNCED 
+   GL-DEMO-66188    MATCHED              erp=('1366188', 'Demo Receivable')     fineract=('1366188', 'Demo Receivable', 'ASSET')  mapping=SYNCED 
+   GL-DEMO-90134    MATCHED              erp=('1390134', 'Demo Receivable')     fineract=('1390134', 'Demo Receivable', 'ASSET')  mapping=SYNCED 
+   GL-DEMO-90147    MATCHED              erp=('1390147', 'Demo Receivable')     fineract=('1390147', 'Demo Receivable', 'ASSET')  mapping=SYNCED 
+   string           MATCHED              erp=('FvFERoXH3o2gOZmBolbM', 'string') fineract=('FvFERoXH3o2gOZmBolbM', 'string', 'ASSET') mapping=SYNCED 
+   GL-0YCCKZ        MISSING_IN_ERP       erp=-                                  fineract=('D0YCCKZ', 'Interest Income', 'ASSET')  mapping=None external reference unknown to the ERP
+   GL-12005         MISSING_IN_ERP       erp=-                                  fineract=('100005', 'Cash at Bangalore', 'ASSET') mapping=None external reference unknown to the ERP
+   GL-DEMO-15975    MISSING_IN_ERP       erp=-                                  fineract=('DEMO15975', 'Loan Receivable', 'ASSET') mapping=None external reference unknown to the ERP
+   GL-DEMO-87402    MISSING_IN_ERP       erp=-                                  fineract=('DEMO87402', 'Loan Receivable', 'ASSET') mapping=None external reference unknown to the ERP
+   GL-DPH6TG        MISSING_IN_ERP       erp=-                                  fineract=('CDPH6TG', 'Loan Receivable', 'ASSET')  mapping=None external reference unknown to the ERP
+   GL-SF4O1J        MISSING_IN_ERP       erp=-                                  fineract=('CSF4O1J', 'Loan Receivable', 'ASSET')  mapping=None external reference unknown to the ERP
+   GL-T5KDCO        MISSING_IN_ERP       erp=-                                  fineract=('DT5KDCO', 'Interest Income', 'ASSET')  mapping=None external reference unknown to the ERP
+   Repair for MISSING_IN_FINERACT is the create-only sync (POST /api/accounts/sync); MISSING_IN_ERP (accounts created outside the sync) needs a human.
